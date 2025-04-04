@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Math Duel - VS Computer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #14213d;
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      margin: 60px auto;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    input {
+      width: 100px;
+      padding: 8px;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      background-color: yellow;
+      color: black;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .winner {
+      font-size: 22px;
+      color: #ffcc00;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Math Duel - VS Computer</h1>
+    <p id="question"></p>
+    <input type="number" id="player" placeholder="Your Answer" />
+    <br />
+    <button onclick="checkAnswer()">Submit</button>
+    <p id="score1">Your Score: 0</p>
+    <p id="score2">Computer: 0</p>
+    <p id="mistakes">Mistakes: 0</p>
+    <p id="computerAnswer"></p>
+    <p id="winner" class="winner"></p>
+  </div>
+
+  <script>
+    let num1, num2, answer, operator;
+    let playerScore = 0;
+    let computerScore = 0;
+    let playerMistakes = 0;
+    let gameOver = false;
+
+    function generateQuestion() {
+      const operations = ['+', '-', '*', '/'];
+      operator = operations[Math.floor(Math.random() * operations.length)];
+
+      num1 = Math.floor(Math.random() * 10) + 1;
+      num2 = Math.floor(Math.random() * 10) + 1;
+
+      if (operator === '/') {
+        num1 = num1 * num2; // to ensure division has an integer result
+      }
+
+      switch (operator) {
+        case '+': answer = num1 + num2; break;
+        case '-': answer = num1 - num2; break;
+        case '*': answer = num1 * num2; break;
+        case '/': answer = num1 / num2; break;
+      }
+
+      document.getElementById("question").innerText = `What is ${num1} ${operator} ${num2}?`;
+      document.getElementById("computerAnswer").innerText = "";
+    }
+
+    function checkAnswer() {
+      if (gameOver) return;
+
+      const playerInput = parseFloat(document.getElementById("player").value);
+      const randomOffset = Math.floor(Math.random() * 3) - 1;
+      let computerGuess = operator === '/' 
+        ? parseFloat((Math.random() < 0.5 ? answer : answer + randomOffset).toFixed(2))
+        : Math.random() < 0.5 ? answer : answer + randomOffset;
+
+      document.getElementById("computerAnswer").innerText = `Computer guessed: ${computerGuess}`;
+
+      if (Math.abs(playerInput - answer) < 0.01) {
+        playerScore++;
+      } else {
+        playerMistakes++;
+        document.getElementById("mistakes").innerText = `Mistakes: ${playerMistakes}`;
+      }
+
+      if (Math.abs(computerGuess - answer) < 0.01) {
+        computerScore++;
+      }
+
+      document.getElementById("score1").innerText = `Your Score: ${playerScore}`;
+      document.getElementById("score2").innerText = `Computer: ${computerScore}`;
+      document.getElementById("player").value = "";
+
+      if (playerMistakes >= 5) {
+        document.getElementById("winner").innerText = "❌ Game Over - You made 5 mistakes!";
+        gameOver = true;
+      } else {
+        generateQuestion();
+      }
+    }
+
+    generateQuestion();
+
+    document.getElementById("player").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+  </script>
+</body>
+</html>

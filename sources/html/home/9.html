@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sliding Puzzle - 3x3</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00b4db, #0083b0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    #puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      margin: 0 auto;
+    }
+
+    .tile {
+      background-color: white;
+      color: #333;
+      font-size: 48px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tile:hover {
+      background-color: #f0f0f0;
+    }
+
+    .empty {
+      background-color: transparent;
+      cursor: default;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .win-buttons {
+      display: none;
+      margin-top: 20px;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .win-buttons button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: yellow;
+      color: black;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: 0.3s ease;
+    }
+
+    .win-buttons button:hover {
+      background-color: orange;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧩 Sliding Puzzle - 3x3</h1>
+    <div id="puzzle"></div>
+    <p id="message"></p>
+    <div class="win-buttons" id="winButtons">
+      <button onclick="createTiles()">🔁 Play Again</button>
+      <button onclick="window.location.href='computer.html'">🏠 Home</button>
+    </div>
+  </div>
+
+  <script>
+    const puzzle = document.getElementById("puzzle");
+    const winButtons = document.getElementById("winButtons");
+    const gridSize = 3;
+    let tiles = [];
+
+    function createTiles() {
+      const numbers = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
+      numbers.push(null);
+
+      do {
+        shuffle(numbers);
+      } while (!isSolvable(numbers));
+
+      tiles = numbers.map(num => {
+        if (num === null) return null;
+        const tile = document.createElement("div");
+        tile.classList.add("tile");
+        tile.textContent = num;
+        tile.addEventListener("click", handleClick);
+        return tile;
+      });
+
+      renderTiles();
+      document.getElementById("message").textContent = "";
+      winButtons.style.display = "none";
+    }
+
+    function renderTiles() {
+      puzzle.innerHTML = "";
+      for (let i = 0; i < tiles.length; i++) {
+        const tile = tiles[i];
+        const cell = document.createElement("div");
+        if (tile) {
+          cell.appendChild(tile);
+        } else {
+          cell.className = "tile empty";
+        }
+        puzzle.appendChild(cell);
+      }
+    }
+
+    function handleClick(event) {
+      const clickedTile = event.target;
+      const index = tiles.indexOf(clickedTile);
+      const emptyIndex = tiles.indexOf(null);
+
+      const clickedRow = Math.floor(index / gridSize);
+      const clickedCol = index % gridSize;
+      const emptyRow = Math.floor(emptyIndex / gridSize);
+      const emptyCol = emptyIndex % gridSize;
+
+      const isAdjacent =
+        (clickedRow === emptyRow && Math.abs(clickedCol - emptyCol) === 1) ||
+        (clickedCol === emptyCol && Math.abs(clickedRow - emptyRow) === 1);
+
+      if (isAdjacent) {
+        tiles[emptyIndex] = clickedTile;
+        tiles[index] = null;
+        renderTiles();
+        checkWin();
+      }
+    }
+
+    function checkWin() {
+      const correct = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
+      const current = tiles.map(tile => tile ? parseInt(tile.textContent) : null);
+      const isSolved = JSON.stringify(current) === JSON.stringify([...correct, null]);
+      if (isSolved) {
+        document.getElementById("message").textContent = "🎉 You solved the puzzle!";
+        winButtons.style.display = "flex";
+      }
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function isSolvable(arr) {
+      const flat = arr.filter(n => n !== null);
+      let inversions = 0;
+      for (let i = 0; i < flat.length - 1; i++) {
+        for (let j = i + 1; j < flat.length; j++) {
+          if (flat[i] > flat[j]) inversions++;
+        }
+      }
+      return inversions % 2 === 0;
+    }
+
+    createTiles();
+  </script>
+</body>
+</html>
