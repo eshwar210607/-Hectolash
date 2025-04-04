@@ -19,3 +19,39 @@
  // Initialize Firebase
  const app = initializeApp(firebaseConfig);
  const analytics = getAnalytics(app);
+
+function showMessage(message, divId){
+  var messageDiv=document.getElementById(divId);
+  messageDiv.style.display="block";
+  messageDiv.innerHTML=message;
+  messageDiv.style.opacity=1;
+  setTimeout(function(){
+    messageDiv.style.opacity=0;
+  },5000);
+}
+
+
+const signIn=document.getElementById('submitlogin');
+ signIn.addEventListener('click', (event)=>{
+    event.preventDefault();
+    const email=document.getElementById('lemail').value;
+    const password=document.getElementById('lpassword').value;
+    const auth=getAuth();
+
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential)=>{
+        showMessage('login is successful', 'signInMessage');
+        const user=userCredential.user;
+        localStorage.setItem('loggedInUserId', user.uid);
+        window.location.href='/sources/html/homepage.html';
+    })
+    .catch((error)=>{
+        const errorCode=error.code;
+        if(errorCode==='auth/invalid-credential'){
+            showMessage('Incorrect Email or Password', 'signInMessage');
+        }
+        else{
+            showMessage('Account does not Exist', 'signInMessage');
+        }
+    })
+ })
