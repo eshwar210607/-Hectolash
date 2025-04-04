@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sign Up Page</title>
+    <!-- Replace Font Awesome with a more reliable CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('/sources/images/image.png');
+            background-color: #f5f5f5; /* Fallback color if image fails to load */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: rgba(227,186,143, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .signup-box h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 12px;
+            position: relative;
+            text-align: center;
+        }
+
+        .signup-box h2::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+
+        .container:hover .signup-box h2::after {
+            width: 100%;
+        }
+
+        .signup-box p {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .input-group:hover label {
+            color: #4CAF50;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+        }
+
+        .input-group input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+            background-color: #fff;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 42px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover {
+            color: #4CAF50;
+        }
+
+        .options {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .options input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signup-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s;
+        }
+
+        .signup-btn:hover {
+            background-color: #3e8e41;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .signup-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Add message display styles */
+        #signUpMessage {
+            display: none;
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #signUpMessage.error {
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-box">
+            <h2>Create Account</h2>
+            <p>Please fill in the details to sign up</p>
+
+            <!-- Add message display div -->
+            <div id="signUpMessage"></div>
+
+            <form id="signupForm">
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required />
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required />
+                </div>
+
+                <div class="input-group password-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required />
+                    <span class="toggle-password" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+
+                <div class="options">
+                    <label>
+                        <input type="checkbox" id="terms" required /> I agree to the Terms & Conditions
+                    </label>
+                </div>
+
+                <button type="submit" class="signup-btn" id="submitsignup">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const toggleIcon = document.querySelector(".toggle-password i");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+    </script>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        // Import the functions you need from the SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-Etg27X80V_DlC_AsRbhKPmTnJfJOIQM",
+            authDomain: "hectolash.firebaseapp.com",
+            projectId: "hectolash",
+            storageBucket: "hectolash.appspot.com",
+            messagingSenderId: "712534964422",
+            appId: "1:712534964422:web:7052fc30cbca6ca2f3ffc7",
+            measurementId: "G-K8K0M8NQ1V"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Function to display messages
+        function showMessage(message, isError = false) {
+            const messageDiv = document.getElementById('signUpMessage');
+            if (messageDiv) {
+                messageDiv.style.display = "block";
+                messageDiv.innerHTML = message;
+                
+                if (isError) {
+                    messageDiv.classList.add('error');
+                } else {
+                    messageDiv.classList.remove('error');
+                }
+                
+                messageDiv.style.opacity = 1;
+                setTimeout(() => {
+                    messageDiv.style.opacity = 0;
+                    setTimeout(() => {
+                        messageDiv.style.display = "none";
+                    }, 500);
+                }, 5000);
+            }
+        }
+
+        // Event listener for form submission
+        document.getElementById('signupForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const userName = document.getElementById('name').value;
+            const termsChecked = document.getElementById('terms').checked;
+
+            if (!termsChecked) {
+                showMessage('Please agree to the Terms & Conditions', true);
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('Password should be at least 6 characters long', true);
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                const userData = {
+                    email: email,
+                    userName: userName,
+                    createdAt: new Date().toISOString()
+                };
+
+                showMessage('Account Created Successfully');
+
+                try {
+                    await setDoc(doc(db, "users", user.uid), userData);
+                    // Redirect after a short delay to show the success message
+                    setTimeout(() => {
+                        window.location.href = '/sources/html/login.html';
+                    }, 2000);
+                } catch (error) {
+                    console.error("Error writing document:", error);
+                    showMessage('Account created but profile setup failed. Please contact support.', true);
+                }
+            } catch (error) {
+                console.error("Authentication error:", error);
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    showMessage('Email Address Already Exists!', true);
+                } else if (error.code === 'auth/invalid-email') {
+                    showMessage('Invalid email address format', true);
+                } else if (error.code === 'auth/weak-password') {
+                    showMessage('Password is too weak', true);
+                } else {
+                    showMessage('Unable to create user: ' + error.message, true);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

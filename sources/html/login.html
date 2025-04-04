@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Login Page</title>
+    <title>Login Page</title>
     <style>
         * {
             margin: 0;
@@ -13,8 +13,8 @@
         }
 
         body {
-            background-image: url('/sources/images/image.png'); /* Updated background image */
-            background-color: transparent;
+            background-image: url('/sources/images/image.png');
+            background-color: #f5f5f5; /* Fallback color */
             background-size: cover;
             background-position: center;
             display: flex;
@@ -26,7 +26,7 @@
 
         .login-container {
             background-color: rgba(227,186,143, 0.4);
-            background-filter: blur(10px);
+            backdrop-filter: blur(10px);
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
             width: 100%;
@@ -37,59 +37,37 @@
             overflow: hidden;
         }
 
-        .login-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A, #2E7D32);
-            transition: all 0.6s ease;
-        }
-
         .login-container:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .login-container:hover::before {
-            left: 0;
-        }
-
         .login-header {
             text-align: center;
             margin-bottom: 35px;
-            position: relative;
         }
 
         .login-header h1 {
             color: #333;
             font-size: 28px;
             margin-bottom: 12px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .login-header h1::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 3px;
-            background-color: #4CAF50;
-            transition: width 0.3s ease;
-        }
-
-        .login-container:hover .login-header h1::after {
-            width: 100%;
         }
 
         .login-header p {
             color: #666;
             font-size: 14px;
+        }
+
+        #signInMessage {
+            display: none;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+            background-color: rgba(255, 0, 0, 0.2);
+            color: #333;
+            opacity: 1;
+            transition: opacity 0.5s ease;
         }
 
         .form-group {
@@ -103,11 +81,6 @@
             color: #555;
             font-weight: 500;
             font-size: 14px;
-            transition: color 0.3s ease;
-        }
-
-        .form-group:hover label {
-            color: #4CAF50;
         }
 
         .form-group input {
@@ -116,15 +89,7 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s;
             background-color: #f9f9f9;
-        }
-
-        .form-group input:focus {
-            border-color: #4CAF50;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-            background-color: #fff;
         }
 
         .password-wrapper {
@@ -140,12 +105,6 @@
             border: none;
             cursor: pointer;
             color: #777;
-            font-size: 16px;
-            transition: color 0.3s;
-        }
-
-        .toggle-password:hover {
-            color: #4CAF50;
         }
 
         .remember-forgot {
@@ -169,23 +128,6 @@
         .forgot-password a {
             color: #4CAF50;
             text-decoration: none;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .forgot-password a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 1.5px;
-            bottom: -2px;
-            left: 0;
-            background-color: #4CAF50;
-            transition: width 0.3s ease;
-        }
-
-        .forgot-password a:hover::after {
-            width: 100%;
         }
 
         .login-button {
@@ -200,27 +142,34 @@
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
-            overflow: hidden;
-        }
-
-        .login-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: all 0.6s;
         }
 
         .login-button:hover {
             background-color: #3e8e41;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
         }
 
-        .login-button:hover::before {
-            left: 100%;
+        /* Loading spinner styles */
+        .button--loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .button--loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .signup-link {
@@ -234,22 +183,6 @@
             color: #4CAF50;
             text-decoration: none;
             font-weight: 500;
-            position: relative;
-        }
-
-        .signup-link a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 1.5px;
-            bottom: -2px;
-            left: 0;
-            background-color: #4CAF50;
-            transition: width 0.3s ease;
-        }
-
-        .signup-link a:hover::after {
-            width: 100%;
         }
 
         .social-login {
@@ -288,85 +221,20 @@
             gap: 20px;
         }
 
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .social-icon::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: rgba(76, 175, 80, 0.1);
-            border-radius: 50%;
-            transform: scale(0);
-            transition: all 0.4s;
-        }
-
-        .social-icon:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .social-icon:hover::before {
-            transform: scale(1);
-        }
-
         /* Media Queries for Responsiveness */
         @media screen and (max-width: 480px) {
             .login-container {
                 padding: 30px 20px;
-                max-width: 100%;
             }
             
             .login-header h1 {
                 font-size: 24px;
             }
             
-            .social-login p::before,
-            .social-login p::after {
-                width: 30%;
-            }
-
             .remember-forgot {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
-            }
-
-            .forgot-password {
-                margin-top: 10px;
-            }
-
-            .social-icons {
-                gap: 15px;
-            }
-        }
-
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 15px;
-            }
-
-            .login-container {
-                max-width: 90%;
-            }
-        }
-
-        @media screen and (min-width: 1200px) {
-            .login-container {
-                max-width: 450px;
-                padding: 50px;
             }
         }
     </style>
@@ -378,21 +246,20 @@
             <p>Please enter your credentials to login</p>
         </div>
         
-        <form>
+        <div id="signInMessage"></div>
+        
+        <form id="loginForm">
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
+                <label for="lemail">Email</label>
+                <input type="email" id="lemail" placeholder="Enter your email" required>
             </div>
             
             <div class="form-group">
-                <label for="password">Password</label>
+                <label for="lpassword">Password</label>
                 <div class="password-wrapper">
-                    <input type="password" id="password" placeholder="Enter your password" required>
-                    <button type="button" class="toggle-password" aria-label="Show password" onclick="togglePassword()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
+                    <input type="password" id="lpassword" placeholder="Enter your password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
@@ -407,59 +274,112 @@
                 </div>
             </div>
             
-            <button type="submit" class="login-button">Login</button>
+            <button type="submit" class="login-button" id="submitlogin">Login</button>
         </form>
         
         <div class="signup-link">
-            <p>Don't have an account? <a href="#">Sign up</a></p>
+            <p>Don't have an account? <a href="/sources/html/signup.html">Sign up</a></p>
         </div>
         
         <div class="social-login">
             <p>Or continue with</p>
             <div class="social-icons">
-                <div class="social-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#DB4437">
-                        <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
-                    </svg>
-                </div>
-                <div class="social-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
-                        <path d="M20.007,3H3.993C3.445,3,3,3.445,3,3.993v16.013C3,20.555,3.445,21,3.993,21h8.621v-6.971h-2.346v-2.717h2.346V9.31c0-2.325,1.42-3.591,3.494-3.591c0.993,0,1.847,0.074,2.096,0.107v2.43l-1.438,0.001c-1.128,0-1.346,0.536-1.346,1.323v1.734h2.69l-0.35,2.717h-2.34V21h4.587C20.555,21,21,20.555,21,20.007V3.993C21,3.445,20.555,3,20.007,3z"/>
-                    </svg>
-                </div>
-                <div class="social-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#000000">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                </div>
+                <!-- Social icons would go here -->
             </div>
         </div>
     </div>
 
     <script>
         function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleButton = document.querySelector('.toggle-password');
+            const passwordInput = document.getElementById('lpassword');
+            const toggleIcon = document.querySelector('.toggle-password i');
             
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                toggleButton.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                    </svg>
-                `;
-                toggleButton.setAttribute('aria-label', 'Hide password');
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
                 passwordInput.type = 'password';
-                toggleButton.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                `;
-                toggleButton.setAttribute('aria-label', 'Show password');
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
             }
+        }
+    </script>
+    
+    <!-- Firebase Scripts -->
+    <script type="module">
+        // Import the functions you need from the SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-Etg27X80V_DlC_AsRbhKPmTnJfJOIQM",
+            authDomain: "hectolash.firebaseapp.com",
+            projectId: "hectolash",
+            storageBucket: "hectolash.appspot.com", // Fixed storage bucket URL
+            messagingSenderId: "712534964422",
+            appId: "1:712534964422:web:7052fc30cbca6ca2f3ffc7",
+            measurementId: "G-K8K0M8NQ1V"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // Function to display messages
+        function showMessage(message, divId) {
+            const messageDiv = document.getElementById(divId);
+            if (messageDiv) {
+                messageDiv.style.display = "block";
+                messageDiv.innerHTML = message;
+                messageDiv.style.opacity = 1;
+                setTimeout(function() {
+                    messageDiv.style.opacity = 0;
+                }, 5000);
+            }
+        }
+
+        // Get the login form
+        const loginForm = document.getElementById('loginForm');
+        const submitlogin = document.getElementById('submitlogin');
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                
+                submitlogin.classList.add('button--loading');
+                submitlogin.disabled = true;
+                
+                const email = document.getElementById('lemail').value;
+                const password = document.getElementById('lpassword').value;
+                
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        showMessage('Login successful', 'signInMessage');
+                        const user = userCredential.user;
+                        localStorage.setItem('loggedInUserId', user.uid);
+                        
+                        // Redirect after a short delay
+                        setTimeout(() => {
+                            window.location.href = '/sources/html/homepage.html';
+                        }, 1000);
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        
+                        if (errorCode === 'auth/invalid-credential') {
+                            showMessage('Incorrect Email or Password', 'signInMessage');
+                        } else {
+                            showMessage('Account does not Exist', 'signInMessage');
+                        }
+                    })
+                    .finally(() => {
+                        // Remove loading state
+                        submitlogin.classList.remove('button--loading');
+                        submitlogin.disabled = false;
+                    });
+            });
         }
     </script>
 </body>
