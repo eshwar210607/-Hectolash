@@ -48,6 +48,28 @@
       color: #ffcc00;
       margin-top: 20px;
     }
+
+    .back-button, .restart-button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #f1c40f;
+      border-radius: 10px;
+      color: #333;
+      font-size: 18px;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .back-button:hover, .restart-button:hover {
+      transform: scale(1.05);
+      background-color: #f39c12;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: #ff6347;
+    }
   </style>
 </head>
 <body>
@@ -56,13 +78,20 @@
     <p id="question"></p>
     <input type="number" id="player" placeholder="Your Answer" />
     <br />
-    <button onclick="checkAnswer()">Submit</button>
+    <button onclick="checkAnswer()" id="submitBtn">Submit</button>
     <p id="score1">Your Score: 0</p>
     <p id="score2">Computer: 0</p>
     <p id="mistakes">Mistakes: 0</p>
     <p id="computerAnswer"></p>
     <p id="winner" class="winner"></p>
+    <p id="timer">Time Left: 5:00</p>
   </div>
+
+  <!-- Back Button -->
+  <a href="computer.html" class="back-button" id="backButton">Back</a>
+
+  <!-- Restart Button -->
+  <button class="restart-button" id="restartButton" style="display:none;" onclick="restartGame()">Restart</button>
 
   <script>
     let num1, num2, answer, operator;
@@ -70,6 +99,11 @@
     let computerScore = 0;
     let playerMistakes = 0;
     let gameOver = false;
+    let timerInterval;
+    let timeLeft = 300; // 5 minutes in seconds
+    let questionTimeout;
+    let answerTimeout;
+    let computerAnswer;
 
     function generateQuestion() {
       const operations = ['+', '-', '*', '/'];
@@ -90,19 +124,29 @@
       }
 
       document.getElementById("question").innerText = `What is ${num1} ${operator} ${num2}?`;
-      document.getElementById("computerAnswer").innerText = "";
+
+      // Generate computer's answer automatically
+      computerAnswer = Math.random() < 0.5 ? answer : answer + Math.floor(Math.random() * 3) - 1; // computer gives a close answer
+
+      // Set a timeout to automatically count as a wrong answer after 5 seconds if player doesn't answer
+      answerTimeout = setTimeout(() => {
+        if (!gameOver) {
+          playerMistakes++;
+          document.getElementById("mistakes").innerText = `Mistakes: ${playerMistakes}`;
+          document.getElementById("computerAnswer").innerText = `Computer's Answer: ${computerAnswer}`;
+          generateQuestion(); // Generate new question after timeout
+        }
+      }, 5000); // 5 seconds
+
+      // Enable the input and submit button
+      document.getElementById("player").disabled = false;
+      document.getElementById("submitBtn").disabled = false;
     }
 
     function checkAnswer() {
       if (gameOver) return;
 
       const playerInput = parseFloat(document.getElementById("player").value);
-      const randomOffset = Math.floor(Math.random() * 3) - 1;
-      let computerGuess = operator === '/' 
-        ? parseFloat((Math.random() < 0.5 ? answer : answer + randomOffset).toFixed(2))
-        : Math.random() < 0.5 ? answer : answer + randomOffset;
-
-      document.getElementById("computerAnswer").innerText = `Computer guessed: ${computerGuess}`;
 
       if (Math.abs(playerInput - answer) < 0.01) {
         playerScore++;
@@ -111,23 +155,68 @@
         document.getElementById("mistakes").innerText = `Mistakes: ${playerMistakes}`;
       }
 
-      if (Math.abs(computerGuess - answer) < 0.01) {
-        computerScore++;
-      }
-
       document.getElementById("score1").innerText = `Your Score: ${playerScore}`;
       document.getElementById("score2").innerText = `Computer: ${computerScore}`;
       document.getElementById("player").value = "";
 
+      // Disable input and submit button for 5 seconds after answering
+      document.getElementById("player").disabled = true;
+      document.getElementById("submitBtn").disabled = true;
+
+      // After 5 seconds, generate the next question
+      setTimeout(() => {
+        if (!gameOver) {
+          generateQuestion();
+        }
+      }, 5000); // 5 seconds delay before changing the question
+
+      // If player makes 5 mistakes, end the game
       if (playerMistakes >= 5) {
         document.getElementById("winner").innerText = "❌ Game Over - You made 5 mistakes!";
         gameOver = true;
-      } else {
-        generateQuestion();
       }
     }
 
+    function startTimer() {
+      timerInterval = setInterval(function () {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timer").innerText = `Time Left: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      gameOver = true;
+      document.getElementById("winner").innerText = playerScore > computerScore ? "🎉 You Win!" : "❌ You Lose!";
+      document.getElementById("backButton").style.display = "none";
+      document.getElementById("restartButton").style.display = "inline-block";
+    }
+
+    function restartGame() {
+      gameOver = false;
+      playerScore = 0;
+      computerScore = 0;
+      playerMistakes = 0;
+      timeLeft = 300; // Reset timer
+      document.getElementById("winner").innerText = "";
+      document.getElementById("score1").innerText = `Your Score: 0`;
+      document.getElementById("score2").innerText = `Computer: 0`;
+      document.getElementById("mistakes").innerText = `Mistakes: 0`;
+      document.getElementById("player").value = "";
+      document.getElementById("backButton").style.display = "inline-block";
+      document.getElementById("restartButton").style.display = "none";
+      startTimer();
+      generateQuestion();
+    }
+
     generateQuestion();
+    startTimer();
 
     document.getElementById("player").addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
