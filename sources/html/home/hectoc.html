@@ -51,6 +51,13 @@
       max-width: 600px;
     }
 
+    .hectoc-timer {
+      font-size: 24px;
+      font-weight: bold;
+      color: red; /* Changed color to red */
+      margin-bottom: 15px;
+    }
+
     .hectoc-sequence {
       font-size: 2.5rem;
       font-weight: bold;
@@ -152,9 +159,9 @@
 
     .back-button {
       margin-top: 20px;
-      padding: 15px 30px; /* Adjusted size */
-      background-color: yellow; /* Changed background color to yellow */
-      color: black; /* Text color for better contrast */
+      padding: 15px 30px;
+      background-color: yellow;
+      color: black;
       border: none;
       border-radius: 10px;
       font-size: 18px;
@@ -165,8 +172,8 @@
     }
 
     .back-button:hover {
-      transform: scale(1.1); /* Slightly larger on hover */
-      background-color: #ffd700; /* Darker yellow on hover */
+      transform: scale(1.1);
+      background-color: #ffd700;
     }
   </style>
 </head>
@@ -177,6 +184,7 @@
   <div class="title">Hecto Challenge On</div>
 
   <div class="hectoc-container">
+    <div id="hectoc-timer" class="hectoc-timer">Time Left: 2:00</div>
     <div class="hectoc-sequence" id="hectoc-sequence">123456</div>
 
     <div class="hectoc-input-area">
@@ -190,7 +198,6 @@
     <div id="hectoc-result" class="hectoc-result"></div>
     <div id="hectoc-hint-text" class="hectoc-hint hidden"></div>
 
-    <!-- Back Button -->
     <button id="hectoc-back" class="back-button" onclick="goToComputer()">← Back</button>
   </div>
 
@@ -204,6 +211,34 @@
       const showAnswerButton = document.getElementById('hectoc-show-answer');
       const resultElement = document.getElementById('hectoc-result');
       const hintTextElement = document.getElementById('hectoc-hint-text');
+      const timerElement = document.getElementById('hectoc-timer');
+
+      let timerInterval;
+      let timeLeft = 120;
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 120;
+        updateTimerDisplay();
+
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTimerDisplay();
+
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timerElement.textContent = "Time's up!";
+            solutionInput.disabled = true;
+            checkButton.disabled = true;
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `Time Left: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }
 
       function isValidExpression(expr, sequence) {
         return expr.replace(/[^1-9]/g, '') === sequence;
@@ -247,6 +282,9 @@
         hintTextElement.textContent = '';
         hintTextElement.classList.add('hidden');
         solutionInput.value = '';
+        solutionInput.disabled = false;
+        checkButton.disabled = false;
+        startTimer();
       }
 
       checkButton.addEventListener('click', function () {
@@ -291,7 +329,7 @@
     });
 
     function goToComputer() {
-      window.location.href = 'computer.html'; // Redirect to computer.html
+      window.location.href = 'computer.html';
     }
   </script>
 </body>
