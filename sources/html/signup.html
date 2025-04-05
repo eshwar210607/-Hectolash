@@ -16,7 +16,7 @@
         }
 
         body {
-            background-image: url('/sources/images/image.png');
+            background-image: url('/sources/images/background.jpg');
             background-color: #f5f5f5; /* Fallback color if image fails to load */
             background-size: cover;
             background-position: center;
@@ -325,9 +325,13 @@
 
                 try {
                     await setDoc(doc(db, "users", user.uid), userData);
+                    
+                    // Debugging: Log before redirection
+                    console.log('Redirecting to login page...');
+
                     // Redirect after a short delay to show the success message
                     setTimeout(() => {
-                        window.location.href = '/sources/html/login.html';
+                        window.location.href = './login.html'; // Ensure this path is correct
                     }, 2000);
                 } catch (error) {
                     console.error("Error writing document:", error);
