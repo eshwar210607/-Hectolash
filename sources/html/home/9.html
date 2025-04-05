@@ -19,17 +19,17 @@
     .logo-container {
       position: absolute;
       top: 20px;
-      left: 20px; /* Align to the left */
+      left: 20px;
       z-index: 1000;
     }
 
     .logo-container img {
-      width: 60px; /* Adjust size as needed */
-      height: 60px; /* Adjust size as needed */
-      border-radius: 50%; /* Makes the image circular */
-      object-fit: cover; /* Ensures the image fits within the circle */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
-      border: 2px solid white; /* Optional: Adds a border for better contrast */
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid white;
     }
 
     .container {
@@ -124,7 +124,7 @@
     }
 
     .home-button {
-      display: none; /* Initially hide the home button */
+      display: none;
       margin-top: 20px;
       padding: 10px 20px;
       font-size: 16px;
@@ -169,7 +169,6 @@
       <button onclick="goHome()">🏠 Home</button>
     </div>
 
-    <!-- Centered Home Button -->
     <button class="home-button" id="homeButton" onclick="goHome()">🏠 Home</button>
   </div>
 
@@ -178,23 +177,24 @@
     const winButtons = document.getElementById("winButtons");
     const message = document.getElementById("message");
     const timerElement = document.getElementById("timer");
-    const homeButton = document.getElementById("homeButton"); // Home button reference
+    const homeButton = document.getElementById("homeButton");
     const gridSize = 3;
     let tiles = [];
     let timer;
-    let timeRemaining = 5 * 60; // 5 minutes in seconds
+    let timeRemaining = 5 * 60;
+    let score = 0;
 
     function goBack() {
       window.location.href = 'sliding.html';
     }
 
     function goHome() {
-      window.location.href = 'game.html'; // Redirect to game.html when home button is clicked
+      window.location.href = 'game.html';
     }
 
     function createTiles() {
-      // Reset the timer and start it again
       timeRemaining = 5 * 60;
+      score = 0;
       startTimer();
 
       const numbers = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
@@ -216,7 +216,7 @@
       renderTiles(puzzle, tiles);
       message.textContent = "Your turn!";
       winButtons.style.display = "none";
-      homeButton.style.display = "none"; // Hide home button at the start
+      homeButton.style.display = "none";
     }
 
     function renderTiles(puzzleElement, tiles) {
@@ -238,27 +238,21 @@
       const emptyIndex = tiles.indexOf(null);
       const index = tiles.indexOf(clickedTile);
 
-      if (index === -1) return; // If the clicked tile is not valid, exit
+      if (index === -1) return;
 
       const clickedRow = Math.floor(index / gridSize);
       const clickedCol = index % gridSize;
       const emptyRow = Math.floor(emptyIndex / gridSize);
       const emptyCol = emptyIndex % gridSize;
 
-      // Check if the clicked tile is adjacent to the empty tile
       const isAdjacent =
         (clickedRow === emptyRow && Math.abs(clickedCol - emptyCol) === 1) ||
         (clickedCol === emptyCol && Math.abs(clickedRow - emptyRow) === 1);
 
       if (isAdjacent) {
-        // Swap the clicked tile with the empty tile
         tiles[emptyIndex] = clickedTile;
         tiles[index] = null;
-
-        // Re-render the tiles
         renderTiles(puzzle, tiles);
-
-        // Check if the player has won
         checkWin();
       }
     }
@@ -269,11 +263,22 @@
       const isSolved = JSON.stringify(current) === JSON.stringify([...correct, null]);
 
       if (isSolved) {
-        message.textContent = "🎉 You solved the puzzle!";
-        winButtons.style.display = "none"; // Hide the "Play Again" button
-        homeButton.style.display = "block"; // Show the "Home" button centered below
         stopTimer();
+        score = calculateScore();
+        message.textContent = `🎉 You solved the puzzle! Score: ${score}`;
+        winButtons.style.display = "none";
+        homeButton.style.display = "block";
       }
+    }
+
+    function calculateScore() {
+      const timeTaken = 5 * 60 - timeRemaining;
+      if (timeTaken <= 60) return 50;
+      else if (timeTaken <= 120) return 40;
+      else if (timeTaken <= 180) return 30;
+      else if (timeTaken <= 240) return 20;
+      else if (timeTaken <= 300) return 10;
+      return 0;
     }
 
     function shuffle(array) {
@@ -295,12 +300,15 @@
     }
 
     function startTimer() {
+      clearInterval(timer);
+      updateTimerDisplay();
       timer = setInterval(() => {
         if (timeRemaining <= 0) {
           stopTimer();
-          message.textContent = "⏰ Time's up! You didn't finish the puzzle in time.";
+          score = 0;
+          message.textContent = `⏰ Time's up! You didn't finish the puzzle in time. Score: ${score}`;
           winButtons.style.display = "flex";
-          homeButton.style.display = "block"; // Show home button if time's up
+          homeButton.style.display = "block";
         } else {
           timeRemaining--;
           updateTimerDisplay();
