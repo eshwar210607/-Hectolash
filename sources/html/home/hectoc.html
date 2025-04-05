@@ -35,26 +35,6 @@
       border: 2px solid white;
     }
 
-    .logout-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #f1c40f;
-      color: #333;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s;
-    }
-
-    .logout-btn:hover {
-      transform: scale(1.05);
-      background-color: #f39c12;
-    }
-
     .title {
       font-size: 48px;
       font-weight: bold;
@@ -169,13 +149,31 @@
     .hidden {
       display: none;
     }
+
+    .back-button {
+      margin-top: 20px;
+      padding: 15px 30px; /* Adjusted size */
+      background-color: yellow; /* Changed background color to yellow */
+      color: black; /* Text color for better contrast */
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .back-button:hover {
+      transform: scale(1.1); /* Slightly larger on hover */
+      background-color: #ffd700; /* Darker yellow on hover */
+    }
   </style>
 </head>
 <body>
   <div class="logo-container">
     <img src="magic-maths-logo.png" alt="Magic Maths Logo">
   </div>
-  <button class="logout-btn">Logout</button>
   <div class="title">Hecto Challenge On</div>
 
   <div class="hectoc-container">
@@ -191,6 +189,9 @@
 
     <div id="hectoc-result" class="hectoc-result"></div>
     <div id="hectoc-hint-text" class="hectoc-hint hidden"></div>
+
+    <!-- Back Button -->
+    <button id="hectoc-back" class="back-button" onclick="goToComputer()">← Back</button>
   </div>
 
   <script>
@@ -288,6 +289,10 @@
 
       generateSequence();
     });
+
+    function goToComputer() {
+      window.location.href = 'computer.html'; // Redirect to computer.html
+    }
   </script>
 </body>
 </html>
