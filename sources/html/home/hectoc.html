@@ -329,26 +329,30 @@
       function findExpression(sequence) {
         const ops = ['+', '-', '*', '/'];
         const nums = sequence.split('');
-        const results = [];
+        let result = null;
 
         function dfs(idx, expr) {
           if (idx === nums.length) {
             try {
               if (eval(expr) === 100) {
-                results.push(expr);
+                console.log(`Valid expression found: ${expr}`); // Debugging
+                result = expr;
                 return true;
               }
-            } catch {}
-            return false;
-          }
-          for (let op of ops) {
-            if (dfs(idx + 1, expr + op + nums[idx])) return true;
+            } catch {
+              return false;
+            }
+          } else {
+            for (let op of ops) {
+              if (dfs(idx + 1, expr + op + nums[idx])) return true;
+            }
           }
           return false;
         }
 
         dfs(1, nums[0]);
-        return results[0] || null;
+        console.log(`Final result: ${result}`); // Debugging
+        return result;
       }
 
       function generateSequence() {
