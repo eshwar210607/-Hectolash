@@ -20,17 +20,17 @@
     .logo-container {
       position: absolute;
       top: 20px;
-      left: 20px; /* Align to the left */
+      left: 20px;
       z-index: 1000;
     }
 
     .logo-container img {
-      width: 60px; /* Adjust size as needed */
-      height: 60px; /* Adjust size as needed */
-      border-radius: 50%; /* Makes the image circular */
-      object-fit: cover; /* Ensures the image fits within the circle */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
-      border: 2px solid white; /* Optional: Adds a border for better contrast */
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid white;
     }
 
     .container {
@@ -162,15 +162,12 @@
     let timeLeft;
 
     function startTimer() {
-      clearInterval(timerInterval); // Clear any previous timer
-      timeLeft = 5 * 60; // 10 minutes in seconds
-
+      clearInterval(timerInterval);
+      timeLeft = 10 * 60; // 10 minutes in seconds
       updateTimerDisplay();
-
       timerInterval = setInterval(() => {
         timeLeft--;
         updateTimerDisplay();
-
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           endGame(false);
@@ -186,18 +183,24 @@
 
     function endGame(won) {
       if (won) {
-        messageDisplay.textContent = "🎉 You solved the puzzle!";
+        const score = calculateScore();
+        messageDisplay.textContent = `🎉 You solved the puzzle! Score: ${score}`;
         winButtons.style.display = "flex";
       } else {
-        messageDisplay.textContent = "❌ You lost the game!";
+        messageDisplay.textContent = "❌ You lost the game! Score: 0";
         loseButtons.style.display = "flex";
       }
+    }
+
+    function calculateScore() {
+      let score = Math.round((timeLeft / (10 * 60)) * 100);
+      if (score > 10) score = 10;
+      return score;
     }
 
     function createTiles() {
       const numbers = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
       numbers.push(null);
-
       do {
         shuffle(numbers);
       } while (!isSolvable(numbers));
