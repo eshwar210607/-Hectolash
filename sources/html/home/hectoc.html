@@ -175,6 +175,66 @@
       transform: scale(1.1);
       background-color: #ffd700;
     }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* Ensure it appears above all other elements */
+    }
+
+    .popup-content {
+      background: white;
+      padding: 30px 50px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup-content p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #D8000C; /* Red color for the message */
+    }
+
+    .back-button,
+    .play-again-button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .back-button {
+      background-color: yellow;
+      color: black;
+    }
+
+    .back-button:hover {
+      background-color: #ffd700;
+    }
+
+    .play-again-button:hover {
+      transform: scale(1.1);
+      background-color: #45a049;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -201,6 +261,14 @@
     <button id="hectoc-back" class="back-button" onclick="goToComputer()">← Back</button>
   </div>
 
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <p>Time's Up! Wrong Answer!</p>
+      <button class="back-button" onclick="goToComputer()">← Back</button>
+      <button class="play-again-button" onclick="playAgain()">Play Again</button>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const sequenceElement = document.getElementById('hectoc-sequence');
@@ -218,7 +286,7 @@
 
       function startTimer() {
         clearInterval(timerInterval);
-        timeLeft = 120;
+        timeLeft = 120; // Reset the timer to 2 minutes
         updateTimerDisplay();
 
         timerInterval = setInterval(() => {
@@ -227,9 +295,7 @@
 
           if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            timerElement.textContent = "Time's up!";
-            solutionInput.disabled = true;
-            checkButton.disabled = true;
+            showTimeoutPopup(); // Show the popup when the timer runs out
           }
         }, 1000);
       }
@@ -330,6 +396,17 @@
 
     function goToComputer() {
       window.location.href = 'computer.html';
+    }
+
+    function showTimeoutPopup() {
+      const popup = document.getElementById('popup');
+      popup.classList.remove('hidden'); // Show the popup
+    }
+
+    function playAgain() {
+      const popup = document.getElementById('popup');
+      popup.classList.add('hidden'); // Hide the popup
+      generateSequence(); // Restart the game
     }
   </script>
 </body>
