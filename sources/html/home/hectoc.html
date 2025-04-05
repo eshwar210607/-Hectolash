@@ -51,11 +51,23 @@
       max-width: 600px;
     }
 
+    .hectoc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
     .hectoc-timer {
       font-size: 24px;
       font-weight: bold;
-      color: red; /* Changed color to red */
-      margin-bottom: 15px;
+      color: red;
+    }
+
+    .hectoc-score {
+      font-size: 24px;
+      font-weight: bold;
+      color: green;
     }
 
     .hectoc-sequence {
@@ -244,7 +256,10 @@
   <div class="title">Hecto Challenge On</div>
 
   <div class="hectoc-container">
-    <div id="hectoc-timer" class="hectoc-timer">Time Left: 2:00</div>
+    <div class="hectoc-header">
+      <div id="hectoc-timer" class="hectoc-timer">Time Left: 2:00</div>
+      <div id="hectoc-score" class="hectoc-score">Score: 0</div>
+    </div>
     <div class="hectoc-sequence" id="hectoc-sequence">123456</div>
 
     <div class="hectoc-input-area">
@@ -283,6 +298,7 @@
 
       let timerInterval;
       let timeLeft = 120;
+      let score = 0; // Initialize the score
 
       function startTimer() {
         clearInterval(timerInterval);
@@ -353,6 +369,11 @@
         startTimer();
       }
 
+      function updateScore() {
+        score += 50; // Increase score by 50
+        document.getElementById('hectoc-score').textContent = `Score: ${score}`; // Update the score display
+      }
+
       checkButton.addEventListener('click', function () {
         const sequence = sequenceElement.textContent;
         const solution = solutionInput.value;
@@ -362,6 +383,9 @@
           if (result === 100 && isValidExpression(solution, sequence)) {
             resultElement.textContent = 'Your expression is correct!';
             resultElement.className = 'hectoc-result correct';
+            clearInterval(timerInterval); // Stop the timer
+            updateScore(); // Update the score
+            generateSequence(); // Generate a new sequence automatically
           } else {
             resultElement.textContent = 'Invalid. Try again!';
             resultElement.className = 'hectoc-result incorrect';
@@ -382,13 +406,17 @@
       showAnswerButton.addEventListener('click', function () {
         const sequence = sequenceElement.textContent;
         const answer = findExpression(sequence);
+
+        const popup = document.getElementById('popup');
+        const popupMessage = popup.querySelector('p');
+
         if (answer) {
-          resultElement.textContent = 'One solution is: ' + answer;
-          resultElement.className = 'hectoc-result correct';
+          popupMessage.textContent = `Next Time! The correct answer is: ${answer}`; // Show the correct answer
         } else {
-          resultElement.textContent = 'No solution found for this sequence.';
-          resultElement.className = 'hectoc-result incorrect';
+          popupMessage.textContent = 'No solution found. Next Time!';
         }
+
+        popup.classList.remove('hidden'); // Show the popup
       });
 
       generateSequence();
