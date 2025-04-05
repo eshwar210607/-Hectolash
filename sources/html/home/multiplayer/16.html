@@ -7,13 +7,29 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #00b4db, #0083b0);
+      background: linear-gradient(to right, #ff512f, #dd2476);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
       flex-direction: column;
+    }
+
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px; /* Align to the left */
+      z-index: 1000;
+    }
+
+    .logo-container img {
+      width: 60px; /* Adjust size as needed */
+      height: 60px; /* Adjust size as needed */
+      border-radius: 50%; /* Makes the image circular */
+      object-fit: cover; /* Ensures the image fits within the circle */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
+      border: 2px solid white; /* Optional: Adds a border for better contrast */
     }
 
     .container {
@@ -30,14 +46,14 @@
     .puzzle-container {
       display: flex;
       justify-content: space-around;
-      width: 70%;
-      gap: 50px; /* Added gap between the two puzzles */
+      width: 80%;
+      gap: 50px;
     }
 
     #puzzle, #puzzle2 {
       display: grid;
-      grid-template-columns: repeat(4, 75px); /* 4 columns instead of 3 */
-      grid-template-rows: repeat(4, 75px); /* 4 rows instead of 3 */
+      grid-template-columns: repeat(4, 80px);
+      grid-template-rows: repeat(4, 80px);
       gap: 5px;
       margin: 0 auto;
     }
@@ -45,7 +61,7 @@
     .tile {
       background-color: white;
       color: #333;
-      font-size: 32px; /* Adjust font size for 4x4 grid */
+      font-size: 32px;
       font-weight: bold;
       display: flex;
       justify-content: center;
@@ -116,10 +132,12 @@
   </style>
 </head>
 <body>
+  <div class="logo-container">
+    <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  </div>
   <div class="container">
     <h1>🧩 Sliding Puzzle - 4x4</h1>
-    
-    <!-- Puzzle container with player names -->
+
     <div class="puzzle-container">
       <div>
         <div class="player-name">Player 1</div>
@@ -130,7 +148,7 @@
         <div id="puzzle2"></div>
       </div>
     </div>
-    
+
     <p id="message"></p>
 
     <div class="controls">
@@ -149,24 +167,32 @@
     const puzzle2 = document.getElementById("puzzle2");
     const winButtons = document.getElementById("winButtons");
     const message = document.getElementById("message");
-    const gridSize = 4; // Change grid size to 4
+    const gridSize = 4;
     let tiles1 = [];
     let tiles2 = [];
-    let currentPlayer = 1; // Start with Player 1
+    let currentPlayer = 1;
 
     function goBack() {
       window.location.href = 'sliding.html';
     }
 
     function createTiles() {
-      const numbers = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
-      numbers.push(null); // The last tile is null (empty space)
+      let numbers1, numbers2;
+
+      // Generate different solvable puzzles
+      do {
+        numbers1 = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
+        numbers1.push(null);
+        shuffle(numbers1);
+      } while (!isSolvable(numbers1));
 
       do {
-        shuffle(numbers);
-      } while (!isSolvable(numbers));
+        numbers2 = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
+        numbers2.push(null);
+        shuffle(numbers2);
+      } while (!isSolvable(numbers2) || arraysEqual(numbers1, numbers2));
 
-      tiles1 = numbers.map(num => {
+      tiles1 = numbers1.map(num => {
         if (num === null) return null;
         const tile = document.createElement("div");
         tile.classList.add("tile");
@@ -175,7 +201,7 @@
         return tile;
       });
 
-      tiles2 = numbers.map(num => {
+      tiles2 = numbers2.map(num => {
         if (num === null) return null;
         const tile = document.createElement("div");
         tile.classList.add("tile");
@@ -207,44 +233,36 @@
 
     function handleClick(event) {
       const clickedTile = event.target;
-
-      // Determine which puzzle the clicked tile belongs to
       const isPlayer1 = clickedTile.parentNode.parentNode === puzzle1;
 
-      // Allow interaction only if it's the current player's turn
       if ((currentPlayer === 1 && !isPlayer1) || (currentPlayer === 2 && isPlayer1)) {
-        return; // Exit if the clicked tile doesn't belong to the current player
+        return;
       }
 
       const tiles = isPlayer1 ? tiles1 : tiles2;
       const emptyIndex = tiles.indexOf(null);
       const index = tiles.indexOf(clickedTile);
 
-      if (index === -1) return; // If the clicked tile is not valid, exit
+      if (index === -1) return;
 
       const clickedRow = Math.floor(index / gridSize);
       const clickedCol = index % gridSize;
       const emptyRow = Math.floor(emptyIndex / gridSize);
       const emptyCol = emptyIndex % gridSize;
 
-      // Check if the clicked tile is adjacent to the empty tile
       const isAdjacent =
         (clickedRow === emptyRow && Math.abs(clickedCol - emptyCol) === 1) ||
         (clickedCol === emptyCol && Math.abs(clickedRow - emptyRow) === 1);
 
       if (isAdjacent) {
-        // Swap the clicked tile with the empty tile
         tiles[emptyIndex] = clickedTile;
         tiles[index] = null;
 
-        // Re-render the tiles
         const puzzleElement = isPlayer1 ? puzzle1 : puzzle2;
         renderTiles(puzzleElement, tiles);
 
-        // Check if the current player has won
         checkWin();
 
-        // Switch to the next player
         currentPlayer = currentPlayer === 1 ? 2 : 1;
         message.textContent = `Player ${currentPlayer}'s turn!`;
       }
@@ -278,7 +296,17 @@
           if (flat[i] > flat[j]) inversions++;
         }
       }
-      return inversions % 2 === 0;
+
+      const blankRow = Math.floor(arr.indexOf(null) / gridSize);
+      if (gridSize % 2 !== 0) {
+        return inversions % 2 === 0;
+      } else {
+        return (inversions + blankRow) % 2 !== 0;
+      }
+    }
+
+    function arraysEqual(a, b) {
+      return a.length === b.length && a.every((val, index) => val === b[index]);
     }
 
     createTiles();

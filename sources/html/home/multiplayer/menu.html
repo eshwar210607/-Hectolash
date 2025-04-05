@@ -19,6 +19,22 @@
       color: #fff;
     }
 
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px; /* Align to the left */
+      z-index: 1000;
+    }
+
+    .logo-container img {
+      width: 60px; /* Adjust size as needed */
+      height: 60px; /* Adjust size as needed */
+      border-radius: 50%; /* Makes the image circular */
+      object-fit: cover; /* Ensures the image fits within the circle */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
+      border: 2px solid white; /* Optional: Adds a border for better contrast */
+    }
+
     .logo {
       font-size: 36px;
       font-weight: bold;
@@ -80,6 +96,9 @@
   </style>
 </head>
 <body>
+  <div class="logo-container">
+    <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  </div>
   <div class="logo">🧠 Math Duel (multi)</div>
 
   <div class="button-grid">

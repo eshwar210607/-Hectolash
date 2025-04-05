@@ -16,6 +16,22 @@
       flex-direction: column;
     }
 
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px; /* Align to the left */
+      z-index: 1000;
+    }
+
+    .logo-container img {
+      width: 60px; /* Adjust size as needed */
+      height: 60px; /* Adjust size as needed */
+      border-radius: 50%; /* Makes the image circular */
+      object-fit: cover; /* Ensures the image fits within the circle */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
+      border: 2px solid white; /* Optional: Adds a border for better contrast */
+    }
+
     .container {
       text-align: center;
       color: white;
@@ -31,7 +47,7 @@
       display: flex;
       justify-content: space-around;
       width: 70%;
-      gap: 50px; /* Added gap between the two puzzles */
+      gap: 50px;
     }
 
     #puzzle, #puzzle2 {
@@ -116,10 +132,12 @@
   </style>
 </head>
 <body>
+  <div class="logo-container">
+    <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  </div>
   <div class="container">
     <h1>🧩 Sliding Puzzle - 3x3</h1>
-    
-    <!-- Puzzle container with player names -->
+
     <div class="puzzle-container">
       <div>
         <div class="player-name">Player 1</div>
@@ -130,7 +148,7 @@
         <div id="puzzle2"></div>
       </div>
     </div>
-    
+
     <p id="message"></p>
 
     <div class="controls">
@@ -152,21 +170,30 @@
     const gridSize = 3;
     let tiles1 = [];
     let tiles2 = [];
-    let currentPlayer = 1; // Start with Player 1
+    let currentPlayer = 1;
 
     function goBack() {
       window.location.href = 'sliding.html';
     }
 
     function createTiles() {
-      const numbers = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
-      numbers.push(null);
+      let numbers1, numbers2;
 
+      // Generate puzzle for Player 1
       do {
-        shuffle(numbers);
-      } while (!isSolvable(numbers));
+        numbers1 = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
+        numbers1.push(null);
+        shuffle(numbers1);
+      } while (!isSolvable(numbers1));
 
-      tiles1 = numbers.map(num => {
+      // Generate a DIFFERENT puzzle for Player 2
+      do {
+        numbers2 = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
+        numbers2.push(null);
+        shuffle(numbers2);
+      } while (!isSolvable(numbers2) || arraysEqual(numbers1, numbers2));
+
+      tiles1 = numbers1.map(num => {
         if (num === null) return null;
         const tile = document.createElement("div");
         tile.classList.add("tile");
@@ -175,7 +202,7 @@
         return tile;
       });
 
-      tiles2 = numbers.map(num => {
+      tiles2 = numbers2.map(num => {
         if (num === null) return null;
         const tile = document.createElement("div");
         tile.classList.add("tile");
@@ -206,49 +233,42 @@
     }
 
     function handleClick(event) {
-  const clickedTile = event.target;
+      const clickedTile = event.target;
+      const isPlayer1 = clickedTile.parentNode.parentNode === puzzle1;
 
-  // Determine which puzzle the clicked tile belongs to
-  const isPlayer1 = clickedTile.parentNode.parentNode === puzzle1;
+      if ((currentPlayer === 1 && !isPlayer1) || (currentPlayer === 2 && isPlayer1)) {
+        return;
+      }
 
-  // Allow interaction only if it's the current player's turn
-  if ((currentPlayer === 1 && !isPlayer1) || (currentPlayer === 2 && isPlayer1)) {
-    return; // Exit if the clicked tile doesn't belong to the current player
-  }
+      const tiles = isPlayer1 ? tiles1 : tiles2;
+      const emptyIndex = tiles.indexOf(null);
+      const index = tiles.indexOf(clickedTile);
 
-  const tiles = isPlayer1 ? tiles1 : tiles2;
-  const emptyIndex = tiles.indexOf(null);
-  const index = tiles.indexOf(clickedTile);
+      if (index === -1) return;
 
-  if (index === -1) return; // If the clicked tile is not valid, exit
+      const clickedRow = Math.floor(index / gridSize);
+      const clickedCol = index % gridSize;
+      const emptyRow = Math.floor(emptyIndex / gridSize);
+      const emptyCol = emptyIndex % gridSize;
 
-  const clickedRow = Math.floor(index / gridSize);
-  const clickedCol = index % gridSize;
-  const emptyRow = Math.floor(emptyIndex / gridSize);
-  const emptyCol = emptyIndex % gridSize;
+      const isAdjacent =
+        (clickedRow === emptyRow && Math.abs(clickedCol - emptyCol) === 1) ||
+        (clickedCol === emptyCol && Math.abs(clickedRow - emptyRow) === 1);
 
-  // Check if the clicked tile is adjacent to the empty tile
-  const isAdjacent =
-    (clickedRow === emptyRow && Math.abs(clickedCol - emptyCol) === 1) ||
-    (clickedCol === emptyCol && Math.abs(clickedRow - emptyRow) === 1);
+      if (isAdjacent) {
+        tiles[emptyIndex] = clickedTile;
+        tiles[index] = null;
 
-  if (isAdjacent) {
-    // Swap the clicked tile with the empty tile
-    tiles[emptyIndex] = clickedTile;
-    tiles[index] = null;
+        const puzzleElement = isPlayer1 ? puzzle1 : puzzle2;
+        renderTiles(puzzleElement, tiles);
 
-    // Re-render the tiles
-    const puzzleElement = isPlayer1 ? puzzle1 : puzzle2;
-    renderTiles(puzzleElement, tiles);
+        checkWin();
 
-    // Check if the current player has won
-    checkWin();
+        currentPlayer = currentPlayer === 1 ? 2 : 1;
+        message.textContent = `Player ${currentPlayer}'s turn!`;
+      }
+    }
 
-    // Switch to the next player
-    currentPlayer = currentPlayer === 1 ? 2 : 1;
-    message.textContent = `Player ${currentPlayer}'s turn!`;
-  }
-}
     function checkWin() {
       const correct = [...Array(gridSize * gridSize - 1).keys()].map(n => n + 1);
       const current1 = tiles1.map(tile => tile ? parseInt(tile.textContent) : null);
@@ -278,6 +298,10 @@
         }
       }
       return inversions % 2 === 0;
+    }
+
+    function arraysEqual(a, b) {
+      return a.length === b.length && a.every((val, index) => val === b[index]);
     }
 
     createTiles();
