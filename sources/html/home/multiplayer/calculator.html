@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Duel - Multiplayer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #14213d;
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      margin: 60px auto;
+      max-width: 500px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100px;
+      padding: 8px;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      background-color: yellow;
+      color: black;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .back-button, .restart-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #f1c40f;
+      border-radius: 10px;
+      color: #333;
+      font-size: 18px;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+
+    .back-button:hover, .restart-button:hover {
+      transform: scale(1.05);
+      background-color: #f39c12;
+    }
+
+    .winner {
+      font-size: 22px;
+      color: #ffcc00;
+      margin-top: 20px;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: #ff6347;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Math Duel - Multiplayer</h1>
+    <p id="playerTurn"></p>
+    <p id="question"></p>
+    <input type="number" id="answerInput" placeholder="Answer" />
+    <br />
+    <button id="submitBtn" onclick="submitAnswer()">Submit</button>
+    <p id="score1">Player 1 Score: 0</p>
+    <p id="score2">Player 2 Score: 0</p>
+    <p id="timer">Time Left: 5:00</p>
+    <p id="winner" class="winner"></p>
+  </div>
+
+  <!-- Buttons -->
+  <a href="menu.html" class="back-button" id="backButton">⬅️ Back</a>
+  <button class="restart-button" onclick="restartGame()" id="restartButton">🔄 Restart</button>
+
+  <script>
+    let scores = [0, 0];
+    let currentPlayer = 0;
+    let correctAnswer = 0;
+    let timerInterval;
+    let questionTimer;
+    let timeLeft = 300; // 5 minutes
+
+    function generateQuestion() {
+      const operators = ['+', '-', '*', '/'];
+      const operator = operators[Math.floor(Math.random() * operators.length)];
+      let num1 = Math.floor(Math.random() * 10) + 1;
+      let num2 = Math.floor(Math.random() * 10) + 1;
+      if (operator === '/') num1 = num1 * num2;
+
+      switch (operator) {
+        case '+': correctAnswer = num1 + num2; break;
+        case '-': correctAnswer = num1 - num2; break;
+        case '*': correctAnswer = num1 * num2; break;
+        case '/': correctAnswer = num1 / num2; break;
+      }
+
+      document.getElementById("question").innerText = `Player ${currentPlayer + 1}, What is ${num1} ${operator} ${num2}?`;
+      document.getElementById("playerTurn").innerText = `Player ${currentPlayer + 1}'s Turn`;
+      document.getElementById("answerInput").value = "";
+      document.getElementById("answerInput").disabled = false;
+      document.getElementById("submitBtn").disabled = false;
+
+      clearTimeout(questionTimer);
+      questionTimer = setTimeout(() => {
+        nextTurn();
+      }, 5000);
+    }
+
+    function submitAnswer() {
+      const playerAnswer = parseFloat(document.getElementById("answerInput").value);
+      clearTimeout(questionTimer);
+
+      if (Math.abs(playerAnswer - correctAnswer) < 0.01) {
+        scores[currentPlayer]++;
+      }
+
+      updateScores();
+      nextTurn();
+    }
+
+    function nextTurn() {
+      currentPlayer = 1 - currentPlayer; // switch turns
+      document.getElementById("answerInput").disabled = true;
+      document.getElementById("submitBtn").disabled = true;
+      setTimeout(generateQuestion, 1000);
+    }
+
+    function updateScores() {
+      document.getElementById("score1").innerText = `Player 1 Score: ${scores[0]}`;
+      document.getElementById("score2").innerText = `Player 2 Score: ${scores[1]}`;
+    }
+
+    function startGameTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timer").innerText = `Time Left: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          clearTimeout(questionTimer);
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      document.getElementById("answerInput").disabled = true;
+      document.getElementById("submitBtn").disabled = true;
+
+      if (scores[0] > scores[1]) {
+        document.getElementById("winner").innerText = "🎉 Player 1 Wins!";
+      } else if (scores[1] > scores[0]) {
+        document.getElementById("winner").innerText = "🎉 Player 2 Wins!";
+      } else {
+        document.getElementById("winner").innerText = "🤝 It's a Tie!";
+      }
+
+      // Hide buttons after game ends
+      document.getElementById("backButton").style.display = "none";
+      document.getElementById("restartButton").style.display = "none";
+    }
+
+    function restartGame() {
+      scores = [0, 0];
+      currentPlayer = 0;
+      timeLeft = 300;
+      document.getElementById("winner").innerText = "";
+      updateScores();
+      document.getElementById("backButton").style.display = "inline-block";
+      document.getElementById("restartButton").style.display = "inline-block";
+      document.getElementById("answerInput").disabled = false;
+      document.getElementById("submitBtn").disabled = false;
+      startGameTimer();
+      generateQuestion();
+    }
+
+    // Start the game initially
+    updateScores();
+    startGameTimer();
+    generateQuestion();
+
+    // Allow Enter key to submit
+    document.getElementById("answerInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        submitAnswer();
+      }
+    });
+  </script>
+</body>
+</html>
