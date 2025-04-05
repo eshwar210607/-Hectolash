@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duel Hectoc Challenge</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #8360c3, #2ebf91);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .round {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hectoc-sequence {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 10px;
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .hectoc-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .player-area {
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            color: #333;
+            position: relative;
+        }
+
+        .player-area h2 {
+            margin-bottom: 15px;
+        }
+
+        .player-area input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .player-area button {
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .player-area button:hover {
+            transform: scale(1.05);
+            background-color: #45a049;
+        }
+
+        .hectoc-result {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .correct {
+            background-color: #dff2bf;
+            color: #4F8A10;
+        }
+
+        .incorrect {
+            background-color: #ffbaba;
+            color: #D8000C;
+        }
+
+        .buttons-container {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .buttons-container button {
+            padding: 15px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons-container button:first-child {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .buttons-container button:first-child:hover {
+            background-color: #0b7dda;
+        }
+
+        .buttons-container button:last-child {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .buttons-container button:last-child:hover {
+            background-color: #e68a00;
+        }
+
+        .back-button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: yellow;
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+            background-color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo in the top-left corner -->
+    <div class="logo-container">
+        <img src="magic-maths-logo.png" alt="Magic Maths Logo" onclick="window.location.href='index.html'">
+    </div>
+
+    <div class="title">Hectoc Challenge</div>
+    <div class="round" id="round-count">Round: 1</div>
+    <div class="hectoc-sequence" id="sequence"></div>
+    <div class="hectoc-container">
+        <div class="player-area" id="player1-area">
+            <h2>Player 1</h2>
+            <input id="player1-solution" type="text" placeholder="Your expression">
+            <button id="player1-button" onclick="checkSolution('player1')">Check</button>
+            <div id="player1-result" class="hectoc-result"></div>
+            <div class="score">Score: <span id="player1-score">0</span></div>
+            <div id="player1-timer" class="timer"></div>
+        </div>
+        <div class="player-area" id="player2-area">
+            <h2>Player 2</h2>
+            <input id="player2-solution" type="text" placeholder="Your expression">
+            <button id="player2-button" onclick="checkSolution('player2')">Check</button>
+            <div id="player2-result" class="hectoc-result"></div>
+            <div class="score">Score: <span id="player2-score">0</span></div>
+            <div id="player2-timer" class="timer"></div>
+        </div>
+    </div>
+    <div class="buttons-container">
+        <button onclick="generateSequence()">New Sequence</button>
+        <button onclick="showAnswer()">Show Answer</button>
+    </div>
+
+    <!-- Back Button -->
+    <button class="back-button" onclick="window.location.href='menu.html'">← Back</button>
+
+    <script>
+        let currentSequence = '';
+        let currentTurn = 'player1';
+        let roundCount = 1;
+        let scores = { player1: 0, player2: 0 };
+        let attempts = 0;
+        const sequenceEl = document.getElementById('sequence');
+
+        function isValidExpression(expression, sequence) {
+            const digits = sequence.split('');
+            const usedDigits = expression.replace(/\D/g, '').split('');
+            const digitMap = {};
+            for (let d of digits) digitMap[d] = (digitMap[d] || 0) + 1;
+            for (let d of usedDigits) {
+                if (!digitMap[d]) return false;
+                digitMap[d]--;
+            }
+            return true;
+        }
+
+        // Function to find a valid expression that evaluates to 100
+        function findExpression(sequence) {
+            const ops = ['+', '-', '*', '/'];
+            const nums = sequence.split('');
+            const expressions = (nums, idx = 1, expr = nums[0]) => {
+                if (idx === nums.length) {
+                    try {
+                        if (eval(expr) === 100) return expr;
+                    } catch {
+                        return null;
+                    }
+                } else {
+                    for (let op of ops) {
+                        const newExpr = expressions(nums, idx + 1, expr + op + nums[idx]);
+                        if (newExpr) return newExpr;
+                    }
+                }
+                return null;
+            };
+            return expressions(nums);
+        }
+
+        let timer;
+        let timeLeft = 120;
+
+        function updateTimer() {
+            const timerEl = document.getElementById(`${currentTurn}-timer`);
+            timerEl.textContent = `Timeleft: ${timeLeft}s`;
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 120;
+            updateTimer();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleWrongAnswer();
+                }
+            }, 1000);
+        }
+
+        function switchTurn() {
+            currentTurn = currentTurn === 'player1' ? 'player2' : 'player1';
+            updateTurnDisplay();
+            startTimer();
+        }
+
+        function updateTurnDisplay() {
+            ['player1', 'player2'].forEach(playerId => {
+                const input = document.getElementById(`${playerId}-solution`);
+                const button = document.getElementById(`${playerId}-button`);
+                const area = document.getElementById(`${playerId}-area`);
+                input.disabled = playerId !== currentTurn;
+                button.disabled = playerId !== currentTurn;
+                area.classList.toggle('current-turn', playerId === currentTurn);
+            });
+        }
+
+        function handleWrongAnswer() {
+            attempts++;
+            if (attempts >= 2) {
+                attempts = 0;
+                roundCount++;
+                generateSequence();
+            } else {
+                switchTurn();
+            }
+        }
+
+        function checkSolution(playerId) {
+            if (playerId !== currentTurn) return;
+            const input = document.getElementById(`${playerId}-solution`).value;
+            const resultEl = document.getElementById(`${playerId}-result`);
+            try {
+                const result = eval(input);
+                if (result === 100 && isValidExpression(input, currentSequence)) {
+                    resultEl.textContent = 'Correct!';
+                    resultEl.className = 'hectoc-result correct';
+                    scores[playerId]++;
+                    document.getElementById(`${playerId}-score`).textContent = scores[playerId];
+                    attempts = 0;
+                    roundCount++;
+                    generateSequence();
+                } else {
+                    resultEl.textContent = 'Incorrect or invalid!';
+                    resultEl.className = 'hectoc-result incorrect';
+                    handleWrongAnswer();
+                }
+            } catch {
+                resultEl.textContent = 'Invalid expression!';
+                resultEl.className = 'hectoc-result incorrect';
+                handleWrongAnswer();
+            }
+        }
+
+        function generateSequence() {
+            let expression = null;
+            while (!expression) {
+                currentSequence = Array.from({ length: 6 }, () => Math.floor(Math.random() * 9) + 1).join('');
+                expression = findExpression(currentSequence);
+            }
+            sequenceEl.textContent = currentSequence;
+            document.getElementById('round-count').textContent = `Round: ${roundCount}`;
+            resetGame();
+            updateTurnDisplay();
+            startTimer();
+        }
+
+        function resetGame() {
+            ['player1', 'player2'].forEach(playerId => {
+                document.getElementById(`${playerId}-result`).textContent = '';
+                document.getElementById(`${playerId}-result`).className = 'hectoc-result';
+                document.getElementById(`${playerId}-solution`).value = '';
+            });
+        }
+
+        generateSequence();
+
+        // Function to show the answer
+        function showAnswer() {
+            const sequence = document.getElementById('sequence').textContent;
+            const answer = findExpression(sequence);
+            if (answer) {
+                alert(`A valid solution is: ${answer}`);
+            } else {
+                alert('No valid solution found for this sequence.');
+            }
+        }
+
+        // Attach the showAnswer function to the button
+        document.querySelector('.buttons-container button:last-child').addEventListener('click', showAnswer);
+    </script>
+</body>
+</html>

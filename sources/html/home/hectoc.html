@@ -1,249 +1,445 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hectoc Challenge</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, #8360c3, #2ebf91);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #fff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hectoc Challenge</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #8360c3, #2ebf91);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+    }
 
-        .logo-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
 
-        .logo-container img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            border: 2px solid white;
-        }
+    .logo-container img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid white;
+    }
 
-        .logout-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #f1c40f;
-            color: #333;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s;
-        }
+    .title {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
 
-        .logout-btn:hover {
-            transform: scale(1.05);
-            background-color: #f39c12;
-        }
+    .hectoc-container {
+      background-color: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 600px;
+    }
 
-        .title {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-        }
+    .hectoc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
 
-        .hectoc-container {
-            background-color: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 600px;
-        }
+    .hectoc-timer {
+      font-size: 24px;
+      font-weight: bold;
+      color: red;
+    }
 
-        .hectoc-sequence {
-            font-size: 2.5rem;
-            font-weight: bold;
-            letter-spacing: 10px;
-            text-align: center;
-            margin: 20px 0;
-            color: #333;
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    .hectoc-score {
+      font-size: 24px;
+      font-weight: bold;
+      color: green;
+    }
 
-        .hectoc-input-area {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+    .hectoc-sequence {
+      font-size: 2.5rem;
+      font-weight: bold;
+      letter-spacing: 10px;
+      text-align: center;
+      margin: 20px 0;
+      color: #333;
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
 
-        .hectoc-input-area input {
-            padding: 15px;
-            font-size: 1.2rem;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            width: 100%;
-        }
+    .hectoc-input-area {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
 
-        .hectoc-input-area button {
-            padding: 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: transform 0.2s, background-color 0.3s;
-        }
+    .hectoc-input-area input {
+      padding: 15px;
+      font-size: 1.2rem;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      width: 100%;
+    }
 
-        .hectoc-input-area button:hover {
-            transform: scale(1.05);
-            background-color: #45a049;
-        }
+    .hectoc-input-area button {
+      padding: 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: transform 0.2s, background-color 0.3s;
+    }
 
-        #hectoc-new {
-            background-color: #2196F3;
-        }
+    .hectoc-input-area button:hover {
+      transform: scale(1.05);
+    }
 
-        #hectoc-new:hover {
-            background-color: #0b7dda;
-        }
+    #hectoc-new {
+      background-color: #2196F3;
+    }
 
-        #hectoc-hint {
-            background-color: #ff9800;
-        }
+    #hectoc-new:hover {
+      background-color: #0b7dda;
+    }
 
-        #hectoc-hint:hover {
-            background-color: #e68a00;
-        }
+    #hectoc-hint {
+      background-color: #ff9800;
+    }
 
-        .hectoc-result {
-            padding: 15px;
-            margin-top: 10px;
-            border-radius: 10px;
-            font-weight: bold;
-            min-height: 30px;
-            text-align: center;
-        }
+    #hectoc-hint:hover {
+      background-color: #e68a00;
+    }
 
-        .hectoc-result.correct {
-            background-color: #dff2bf;
-            color: #4F8A10;
-        }
+    #hectoc-show-answer {
+      background-color: #9b59b6;
+    }
 
-        .hectoc-result.incorrect {
-            background-color: #ffbaba;
-            color: #D8000C;
-        }
+    #hectoc-show-answer:hover {
+      background-color: #8e44ad;
+    }
 
-        .hectoc-hint {
-            background-color: #FEEFB3;
-            color: #9F6000;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-        }
+    .hectoc-result {
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      min-height: 30px;
+      text-align: center;
+    }
 
-        .hidden {
-            display: none;
-        }
-    </style>
+    .hectoc-result.correct {
+      background-color: #dff2bf;
+      color: #4F8A10;
+    }
+
+    .hectoc-result.incorrect {
+      background-color: #ffbaba;
+      color: #D8000C;
+    }
+
+    .hectoc-hint {
+      background-color: #FEEFB3;
+      color: #9F6000;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      padding: 15px 30px;
+      background-color: yellow;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .back-button:hover {
+      transform: scale(1.1);
+      background-color: #ffd700;
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* Ensure it appears above all other elements */
+    }
+
+    .popup-content {
+      background: white;
+      padding: 30px 50px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup-content p {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #D8000C; /* Red color for the message */
+    }
+
+    .back-button,
+    .play-again-button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+
+    .back-button {
+      background-color: yellow;
+      color: black;
+    }
+
+    .back-button:hover {
+      background-color: #ffd700;
+    }
+
+    .play-again-button:hover {
+      transform: scale(1.1);
+      background-color: #45a049;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <!-- Logo in the top-left corner -->
-    <div class="logo-container">
-        <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  <div class="logo-container">
+    <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  </div>
+  <div class="title">Hecto Challenge On</div>
+
+  <div class="hectoc-container">
+    <div class="hectoc-header">
+      <div id="hectoc-timer" class="hectoc-timer">Time Left: 2:00</div>
+      <div id="hectoc-score" class="hectoc-score">Score: 0</div>
+    </div>
+    <div class="hectoc-sequence" id="hectoc-sequence">123456</div>
+
+    <div class="hectoc-input-area">
+      <input type="text" id="hectoc-solution" placeholder="Enter your solution (e.g., 1+(2+3+4)*(5+6))">
+      <button id="hectoc-check">Check Solution</button>
+      <button id="hectoc-new">New Sequence</button>
+      <button id="hectoc-hint">Hint</button>
+      <button id="hectoc-show-answer">Show Answer</button>
     </div>
 
-    <!-- Logout button in the top-right corner -->
-    <button class="logout-btn">Logout</button>
+    <div id="hectoc-result" class="hectoc-result"></div>
+    <div id="hectoc-hint-text" class="hectoc-hint hidden"></div>
 
-    <!-- Title above the container -->
-    <div class="title">Hecto Challenge On</div>
+    <button id="hectoc-back" class="back-button" onclick="goToComputer()">← Back</button>
+  </div>
 
-    <!-- Main container -->
-    <div class="hectoc-container">
-        <div class="hectoc-sequence" id="hectoc-sequence">123456</div>
-
-        <div class="hectoc-input-area">
-            <input type="text" id="hectoc-solution" placeholder="Enter your solution (e.g., 1+(2+3+4)*(5+6))">
-            <button id="hectoc-check">Check Solution</button>
-            <button id="hectoc-new">New Sequence</button>
-            <button id="hectoc-hint">Hint</button>
-        </div>
-
-        <div id="hectoc-result" class="hectoc-result"></div>
-        <div id="hectoc-hint-text" class="hectoc-hint hidden"></div>
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <p>Time's Up! Wrong Answer!</p>
+      <button class="back-button" onclick="goToComputer()">← Back</button>
+      <button class="play-again-button" onclick="playAgain()">Play Again</button>
     </div>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sequenceElement = document.getElementById('hectoc-sequence');
-            const solutionInput = document.getElementById('hectoc-solution');
-            const checkButton = document.getElementById('hectoc-check');
-            const newButton = document.getElementById('hectoc-new');
-            const hintButton = document.getElementById('hectoc-hint');
-            const resultElement = document.getElementById('hectoc-result');
-            const hintTextElement = document.getElementById('hectoc-hint-text');
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const sequenceElement = document.getElementById('hectoc-sequence');
+      const solutionInput = document.getElementById('hectoc-solution');
+      const checkButton = document.getElementById('hectoc-check');
+      const newButton = document.getElementById('hectoc-new');
+      const hintButton = document.getElementById('hectoc-hint');
+      const showAnswerButton = document.getElementById('hectoc-show-answer');
+      const resultElement = document.getElementById('hectoc-result');
+      const hintTextElement = document.getElementById('hectoc-hint-text');
+      const timerElement = document.getElementById('hectoc-timer');
 
-            // Generate a new random sequence
-            function generateSequence() {
-                const sequence = Array.from({ length: 6 }, () => Math.floor(Math.random() * 9) + 1).join('');
-                sequenceElement.textContent = sequence;
-                resultElement.textContent = '';
-                resultElement.className = 'hectoc-result';
-                hintTextElement.textContent = '';
-                hintTextElement.classList.add('hidden');
-                solutionInput.value = '';
+      let timerInterval;
+      let timeLeft = 120;
+      let score = 0; // Initialize the score
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 120; // Reset the timer to 2 minutes
+        updateTimerDisplay();
+
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTimerDisplay();
+
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            showTimeoutPopup(); // Show the popup when the timer runs out
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `Time Left: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      function isValidExpression(expr, sequence) {
+        return expr.replace(/[^1-9]/g, '') === sequence;
+      }
+
+      function findExpression(sequence) {
+        const ops = ['+', '-', '*', '/'];
+        const nums = sequence.split('');
+        let result = null;
+
+        function dfs(idx, expr) {
+          if (idx === nums.length) {
+            try {
+              if (eval(expr) === 100) {
+                console.log(`Valid expression found: ${expr}`); // Debugging
+                result = expr;
+                return true;
+              }
+            } catch {
+              return false;
             }
+          } else {
+            for (let op of ops) {
+              if (dfs(idx + 1, expr + op + nums[idx])) return true;
+            }
+          }
+          return false;
+        }
 
-            // Check the user's solution
-            checkButton.addEventListener('click', function () {
-                const sequence = sequenceElement.textContent;
-                const solution = solutionInput.value;
+        dfs(1, nums[0]);
+        console.log(`Final result: ${result}`); // Debugging
+        return result;
+      }
 
-                try {
-                    const result = eval(solution);
-                    if (result === 100 && solution.includes(sequence)) {
-                        resultElement.textContent = 'Correct!';
-                        resultElement.className = 'hectoc-result correct';
-                    } else {
-                        resultElement.textContent = 'Incorrect. Try again!';
-                        resultElement.className = 'hectoc-result incorrect';
-                    }
-                } catch (error) {
-                    resultElement.textContent = 'Invalid expression!';
-                    resultElement.className = 'hectoc-result incorrect';
-                }
-            });
+      function generateSequence() {
+        let sequence = '';
+        let expression = null;
+        while (!expression) {
+          sequence = Array.from({ length: 6 }, () => Math.floor(Math.random() * 9) + 1).join('');
+          expression = findExpression(sequence);
+        }
+        sequenceElement.textContent = sequence;
+        resultElement.textContent = '';
+        resultElement.className = 'hectoc-result';
+        hintTextElement.textContent = '';
+        hintTextElement.classList.add('hidden');
+        solutionInput.value = '';
+        solutionInput.disabled = false;
+        checkButton.disabled = false;
+        startTimer();
+      }
 
-            // Generate a new sequence when the "New Sequence" button is clicked
-            newButton.addEventListener('click', generateSequence);
+      function updateScore() {
+        score += 50; // Increase score by 50
+        document.getElementById('hectoc-score').textContent = `Score: ${score}`; // Update the score display
+      }
 
-            // Show a hint when the "Hint" button is clicked
-            hintButton.addEventListener('click', function () {
-                hintTextElement.textContent = 'Try using parentheses and basic operations to reach 100!';
-                hintTextElement.classList.remove('hidden');
-            });
+      checkButton.addEventListener('click', function () {
+        const sequence = sequenceElement.textContent;
+        const solution = solutionInput.value;
 
-            // Initialize with a random sequence
-            generateSequence();
-        });
-    </script>
+        try {
+          const result = eval(solution);
+          if (result === 100 && isValidExpression(solution, sequence)) {
+            resultElement.textContent = 'Your expression is correct!';
+            resultElement.className = 'hectoc-result correct';
+            clearInterval(timerInterval); // Stop the timer
+            updateScore(); // Update the score
+            generateSequence(); // Generate a new sequence automatically
+          } else {
+            resultElement.textContent = 'Invalid. Try again!';
+            resultElement.className = 'hectoc-result incorrect';
+          }
+        } catch {
+          resultElement.textContent = 'Invalid expression!';
+          resultElement.className = 'hectoc-result incorrect';
+        }
+      });
+
+      newButton.addEventListener('click', generateSequence);
+
+      hintButton.addEventListener('click', function () {
+        hintTextElement.textContent = 'Try using parentheses and operations creatively!';
+        hintTextElement.classList.remove('hidden');
+      });
+
+      showAnswerButton.addEventListener('click', function () {
+        const sequence = sequenceElement.textContent;
+        const answer = findExpression(sequence);
+
+        const popup = document.getElementById('popup');
+        const popupMessage = popup.querySelector('p');
+
+        if (answer) {
+          popupMessage.textContent = `Next Time! The correct answer is: ${answer}`; // Show the correct answer
+        } else {
+          popupMessage.textContent = 'No solution found. Next Time!';
+        }
+
+        popup.classList.remove('hidden'); // Show the popup
+      });
+
+      generateSequence();
+    });
+
+    function goToComputer() {
+      window.location.href = 'computer.html';
+    }
+
+    function showTimeoutPopup() {
+      const popup = document.getElementById('popup');
+      popup.classList.remove('hidden'); // Show the popup
+    }
+
+    function playAgain() {
+      const popup = document.getElementById('popup');
+      popup.classList.add('hidden'); // Hide the popup
+      generateSequence(); // Restart the game
+    }
+  </script>
 </body>
 </html>
