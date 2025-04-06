@@ -19,14 +19,12 @@
             text-align: center;
             color: #fff;
         }
-
         .logo-container {
             position: absolute;
             top: 20px;
             left: 20px;
             z-index: 1000;
         }
-
         .logo-container img {
             width: 80px;
             height: 80px;
@@ -35,7 +33,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             border: 2px solid white;
         }
-
         .profile-container {
             position: absolute;
             top: 20px;
@@ -48,11 +45,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .profile-container:hover .logout-button {
             display: block;
         }
-
         .profile-icon {
             display: flex;
             align-items: center;
@@ -61,11 +56,9 @@
             border-radius: 20px;
             transition: background 0.3s ease;
         }
-
         .profile-icon:hover {
             background: rgba(255, 255, 255, 0.3);
         }
-
         .logout-button {
             display: none;
             background: #ff4b2b;
@@ -77,11 +70,9 @@
             cursor: pointer;
             transition: background 0.3s ease;
         }
-
         .logout-button:hover {
             background: #ff1e00;
         }
-
         .top-buttons {
             width: 100%;
             padding: 10px;
@@ -92,7 +83,6 @@
             border-radius: 10px;
             margin-top: 20px;
         }
-
         .top-buttons button {
             padding: 10px 16px;
             font-size: 14px;
@@ -103,23 +93,19 @@
             border-radius: 8px;
             transition: background 0.3s ease;
         }
-
         .top-buttons button:hover {
             background: #555;
         }
-
         .title {
             font-size: 32px;
             font-weight: bold;
             margin-top: 20px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
-
         .round {
             font-size: 18px;
             margin: 10px 0;
         }
-
         .hectoc-sequence {
             font-size: 24px;
             font-weight: bold;
@@ -130,13 +116,11 @@
             border-radius: 10px;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
         .game-id-display {
             margin-bottom: 20px;
             font-size: 14px;
             color: #555;
         }
-
         .hectoc-container {
             display: flex;
             justify-content: space-around;
@@ -144,7 +128,6 @@
             max-width: 800px;
             margin-top: 20px;
         }
-
         .player-area {
             background: #fff;
             border-radius: 8px;
@@ -155,13 +138,11 @@
             flex-direction: column;
             align-items: center;
         }
-
         .player-area h2 {
             margin-bottom: 10px;
             font-size: 20px;
             color: #333;
         }
-
         .player-area input {
             padding: 10px;
             margin-bottom: 10px;
@@ -172,12 +153,10 @@
             border-radius: 8px;
             transition: border-color 0.3s ease;
         }
-
         .player-area input:focus {
             border-color: #4CAF50;
             outline: none;
         }
-
         .player-area button {
             padding: 10px;
             width: 100%;
@@ -190,12 +169,10 @@
             cursor: pointer;
             transition: background 0.3s ease, transform 0.2s ease;
         }
-
         .player-area button:hover {
             background: #45a049;
             transform: scale(1.05);
         }
-
         .score {
             margin-top: 10px;
             font-weight: bold;
@@ -230,18 +207,14 @@
     <div id="gameIdDisplay" class="game-id-display" style="display:none;"></div>
     <div class="hectoc-container">
         <div class="player-area" id="player1Area">
-            <h2>👤 Player 1</h2>
+            <h2 id="player1Name">👤 You</h2>
             <input id="player1Input" type="text" placeholder="Enter answer">
             <button onclick="submitAnswer('player1')">Check</button>
             <div class="score" id="score1">Score: 0</div>
         </div>
         <div class="player-area" id="player2Area">
-            <h2>👤 Player 2</h2>
-            <div id="player2Content">
-                <input id="player2Input" type="text" placeholder="Enter answer">
-                <button onclick="submitAnswer('player2')">Check</button>
-                <div class="score" id="score2">Score: 0</div>
-            </div>
+            <h2 id="player2Name">👤 Opponent</h2>
+            <div class="score" id="score2">Score: 0</div>
         </div>
     </div>
 
@@ -264,39 +237,26 @@
         const auth = getAuth(app);
 
         function logout() {
-            signOut(auth)
-                .then(() => {
-                    console.log("User logged out successfully");
-                    window.location.href = '/sources/html/login.html'; // Redirect to login page
-                })
-                .catch((error) => {
-                    console.error("Error logging out:", error);
-                    alert("Failed to log out. Please try again.");
-                });
+            signOut(auth).then(() => {
+                window.location.href = '/sources/html/login.html';
+            }).catch((error) => {
+                alert("Failed to log out. Please try again.");
+            });
         }
 
-        onAuthStateChanged(auth, async (user) => {
-            const usernameElement = document.getElementById('username');
-            if (user) {
-                const userDocRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userDocRef);
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
-                    usernameElement.textContent = userData.userName || "User";
-                }
-            } else {
-                usernameElement.textContent = "Guest";
-            }
-        });
+        window.logout = logout;
 
         let gameRef;
         let currentUID = null;
         let playerRole = null;
+        let currentUserName = "You";
 
         const sequenceEl = document.getElementById("sequence");
         const score1El = document.getElementById("score1");
         const score2El = document.getElementById("score2");
         const gameIdDisplayEl = document.getElementById("gameIdDisplay");
+        const player1Name = document.getElementById("player1Name");
+        const player2Name = document.getElementById("player2Name");
 
         function updateSequenceUI(data) {
             sequenceEl.textContent = data.sequence;
@@ -309,9 +269,11 @@
             const player2Div = document.getElementById("player2Area");
 
             if (playerRole === "player1") {
-                player2Div.style.display = "none";
+               player2Name.textContent = opponentName || "👤 Opponent";
+
             } else if (playerRole === "player2") {
                 player1Div.style.display = "none";
+                player2Name.textContent = currentUserName;
             }
         }
 
@@ -331,49 +293,49 @@
                         showOnlyCurrentPlayer();
                     }
 
-                    if (playerRole === "player1" && !data.player2.uid) {
-                        const player2Content = document.getElementById("player2Content");
-                        if (player2Content) {
-                            player2Content.innerHTML = '<p style="font-weight:bold; color:#888;">Waiting for second player to join...</p>';
-                        }
-                    }
+                    if (data.player1.name) player1Name.textContent = data.player1.name;
+                    if (data.player2.name) player2Name.textContent = data.player2.name;
                 }
             });
         }
 
-        async function createOrJoinGame() {
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    currentUID = user.uid;
-
-                    const q = query(collection(db, "hectocGames"), where("player2.uid", "==", null));
-                    const querySnapshot = await getDocs(q);
-
-                    if (!querySnapshot.empty) {
-                        const docRef = querySnapshot.docs[0].ref;
-                        await updateDoc(docRef, { "player2.uid": currentUID });
-                        gameRef = docRef;
-                        playerRole = "player2";
-                        gameIdDisplayEl.style.display = "block";
-                        gameIdDisplayEl.textContent = `Game ID: ${docRef.id}`;
-                        listenToGame(docRef);
-                        showOnlyCurrentPlayer();
-                    } else {
-                        const docRef = await addDoc(collection(db, "hectocGames"), {
-                            sequence: generateSequence(),
-                            player1: { uid: currentUID, score: 0 },
-                            player2: { uid: null, score: 0 },
-                            currentTurn: "player1"
-                        });
-                        gameRef = docRef;
-                        playerRole = "player1";
-                        gameIdDisplayEl.style.display = "block";
-                        gameIdDisplayEl.textContent = `Game ID: ${docRef.id}`;
-                        listenToGame(docRef);
-                        showOnlyCurrentPlayer();
-                    }
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUID = user.uid;
+                const userDocRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userDocRef);
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    currentUserName = userData.userName || "You";
+                    document.getElementById("username").textContent = currentUserName;
                 }
-            });
+            }
+        });
+
+        async function createOrJoinGame() {
+            const q = query(collection(db, "hectocGames"), where("player2.uid", "==", null));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const docRef = querySnapshot.docs[0].ref;
+                await updateDoc(docRef, { "player2.uid": currentUID, "player2.name": currentUserName });
+                gameRef = docRef;
+                playerRole = "player2";
+            } else {
+                const docRef = await addDoc(collection(db, "hectocGames"), {
+                    sequence: generateSequence(),
+                    player1: { uid: currentUID, score: 0, name: currentUserName },
+                    player2: { uid: null, score: 0, name: "" },
+                    currentTurn: "player1"
+                });
+                gameRef = docRef;
+                playerRole = "player1";
+            }
+
+            gameIdDisplayEl.style.display = "block";
+            gameIdDisplayEl.textContent = `Game ID: ${gameRef.id}`;
+            listenToGame(gameRef);
+            showOnlyCurrentPlayer();
         }
 
         function generateSequence() {
