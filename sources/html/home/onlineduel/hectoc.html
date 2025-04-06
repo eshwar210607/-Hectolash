@@ -7,114 +7,272 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #f4f4f9;
             padding: 0;
-            color: #333;
-        }
-        .logo-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .logo-container img {
-            max-width: 180px;
-        }
-        .profile-container {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #8360c3, #2ebf91);
+            height: 100vh;
             display: flex;
-            justify-content: flex-end;
+            flex-direction: column;
             align-items: center;
-            padding: 10px 20px;
-            background-color: #e0e0e0;
-        }
-        .profile-icon {
-            margin-right: 20px;
-            font-weight: bold;
-        }
-        .logout-button {
-            padding: 6px 12px;
-            background-color: #d9534f;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .top-buttons {
-            display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
+            text-align: center;
+            color: #fff;
         }
-        .top-buttons button {
-            padding: 10px 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 6px;
+
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 2px solid white;
             cursor: pointer;
-            background-color: #4285f4;
-            color: white;
         }
+
         .title {
-            text-align: center;
-            font-size: 24px;
+            font-size: 48px;
             font-weight: bold;
-            margin-top: 15px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
+
         .round {
-            text-align: center;
-            margin: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
+
         .hectoc-sequence {
-            text-align: center;
-            font-size: 22px;
-            margin: 15px 0;
-        }
-        .game-id-display {
-            text-align: center;
-            margin: 10px 0;
+            font-size: 2.5rem;
             font-weight: bold;
+            letter-spacing: 10px;
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
         .hectoc-container {
             display: flex;
-            justify-content: space-around;
-            margin: 30px auto;
-            max-width: 800px;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
+
         .player-area {
-            flex: 1;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            margin: 0 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            color: #333;
+            position: relative;
         }
+
         .player-area h2 {
             margin-bottom: 15px;
         }
+
         .player-area input {
-            padding: 8px;
             width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
             margin-bottom: 10px;
         }
+
         .player-area button {
-            padding: 8px 12px;
-            background-color: #28a745;
+            padding: 12px;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 10px;
             cursor: pointer;
-        }
-        .score {
-            margin-top: 10px;
+            font-size: 1rem;
             font-weight: bold;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .player-area button:hover {
+            transform: scale(1.05);
+            background-color: #45a049;
+        }
+
+        .hectoc-result {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .correct {
+            background-color: #dff2bf;
+            color: #4F8A10;
+        }
+
+        .incorrect {
+            background-color: #ffbaba;
+            color: #D8000C;
+        }
+
+        .buttons-container {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .buttons-container button {
+            padding: 15px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons-container button:first-child {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .buttons-container button:first-child:hover {
+            background-color: #0b7dda;
+        }
+
+        .buttons-container button:last-child {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .buttons-container button:last-child:hover {
+            background-color: #e68a00;
+        }
+
+        .back-button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: yellow;
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+            background-color: #ffd700;
+        }
+
+        /* Profile Section */
+        .profile-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .profile-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-button {
+            padding: 8px 15px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .logout-button:hover {
+            transform: scale(1.05);
+            background-color: #e63939;
+        }
+
+        /* Top Buttons */
+        .top-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .top-buttons button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .top-buttons button:first-child {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .top-buttons button:first-child:hover {
+            background-color: #0b7dda;
+        }
+
+        .top-buttons button:nth-child(2) {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .top-buttons button:nth-child(2):hover {
+            background-color: #e68a00;
+        }
+
+        .top-buttons button:last-child {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .top-buttons button:last-child:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
+    <!-- Logo in the top-left corner -->
     <div class="logo-container">
         <img src="/sources/html/home/magic-maths-logo.png" alt="Magic Maths Logo">
     </div>
 
+    <!-- Profile Section in the top-right corner -->
     <div class="profile-container">
         <div class="profile-icon">
             <span id="username">Loading...</span>
@@ -123,14 +281,9 @@
         <button class="logout-button" onclick="logout()">Logout</button>
     </div>
 
-    <div class="top-buttons">
-        <button onclick="goBack()">⬅ Back</button>
-        <button onclick="showAnswer()">💡 Show Answer</button>
-        <button onclick="createOrJoinGame()">🎮 Play Online</button>
-    </div>
     <div class="title">Online Hectoc Challenge</div>
     <div class="round" id="round-count">Round: 1</div>
-    <div class="hectoc-sequence" id="sequence">Loading...</div>
+    <div class="hectoc-sequence" id="sequence">123456</div>
     <div id="gameIdDisplay" class="game-id-display" style="display:none;"></div>
     <div class="hectoc-container">
         <div class="player-area" id="player1Area">
@@ -147,6 +300,12 @@
             </div>
             <div class="score" id="score2">Score: 0</div>
         </div>
+    </div>
+
+    <div class="buttons-container">
+        <button onclick="generateSequence()">⬅ Back</button>
+        <button onclick="showAnswer()">💡 Show Answer</button>
+        <button onclick="createOrJoinGame()">🎮 Play Online</button>
     </div>
 
     <script type="module">
