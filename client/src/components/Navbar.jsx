@@ -5,28 +5,66 @@ const Navbar = () => {
   const { user, logout } = useAuth();
 
   return (
-    <nav className="w-full bg-white/10 backdrop-blur-md border-b border-white/10 px-6 py-4 flex justify-between items-center z-50">
-      {/* Logo and Brand Name */}
-      <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition">
-        <img src="/magic-maths-logo.png" alt="Maths Wizard Logo" className="w-10 h-10 object-contain" />
-        <span className="text-xl font-bold tracking-wider text-white bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+    <nav style={{
+      width: '100%',
+      background: 'rgba(15, 15, 26, 0.95)',
+      borderBottom: '1px solid rgba(139, 92, 246, 0.2)',
+      padding: '14px 32px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backdropFilter: 'blur(12px)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+      boxSizing: 'border-box',
+    }}>
+      {/* Logo and Brand */}
+      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+        <img src="/magic-maths-logo.png" alt="logo" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
+        <span style={{
+          fontSize: '1.2rem',
+          fontWeight: 800,
+          background: 'linear-gradient(135deg, #a78bfa, #ec4899)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          letterSpacing: '0.1em',
+        }}>
           MATHS WIZARD
         </span>
       </Link>
 
       {/* User Actions */}
       {user && (
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400 text-sm">Welcome,</span>
-            <span className="text-white font-semibold text-sm bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: '#6b7280', fontSize: '0.85rem' }}>Welcome,</span>
+            <span style={{
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '0.875rem',
+              background: 'rgba(139,92,246,0.15)',
+              border: '1px solid rgba(139,92,246,0.3)',
+              padding: '4px 14px',
+              borderRadius: '999px',
+            }}>
               {user.name}
             </span>
           </div>
-          
           <button
             onClick={logout}
-            className="rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white text-sm font-medium px-5 py-2 hover:scale-105 transition transform active:scale-95 shadow-lg shadow-purple-500/20"
+            style={{
+              background: 'linear-gradient(135deg, #ec4899, #7c3aed)',
+              border: 'none',
+              borderRadius: '999px',
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              padding: '8px 20px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 15px rgba(124,58,237,0.3)',
+              transition: 'all 0.2s',
+            }}
           >
             Logout
           </button>
