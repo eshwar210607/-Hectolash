@@ -25,22 +25,6 @@ const games = [
     shadow: 'rgba(6,182,212,0.4)',
     path: '/game/sliding',
   },
-  {
-    title: '3x3 Puzzle',
-    description: 'Classic 9-tile sliding number puzzle',
-    emoji: '🎯',
-    gradient: 'linear-gradient(135deg, #10b981, #059669)',
-    shadow: 'rgba(16,185,129,0.4)',
-    path: '/game/puzzle9',
-  },
-  {
-    title: '4x4 Puzzle',
-    description: 'Advanced 16-tile sliding number puzzle',
-    emoji: '🏆',
-    gradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
-    shadow: 'rgba(245,158,11,0.4)',
-    path: '/game/puzzle16',
-  },
 ];
 
 const ComputerMenu = () => {

@@ -25,14 +25,6 @@ const games = [
     shadow: 'rgba(6,182,212,0.4)',
     path: '/game/sliding-multi',
   },
-  {
-    title: 'Online Duel',
-    description: 'Challenge players around the world',
-    emoji: '🌍',
-    gradient: 'linear-gradient(135deg, #10b981, #059669)',
-    shadow: 'rgba(16,185,129,0.4)',
-    path: '/online-duel',
-  },
 ];
 
 const MultiplayerMenu = () => {
