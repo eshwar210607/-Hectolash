@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Puzzle Size Selector</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #8360c3, #2ebf91);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+    }
+
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px; /* Align to the left */
+      z-index: 1000;
+    }
+
+    .logo-container img {
+      width: 60px; /* Adjust size as needed */
+      height: 60px; /* Adjust size as needed */
+      border-radius: 50%; /* Makes the image circular */
+      object-fit: cover; /* Ensures the image fits within the circle */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
+      border: 2px solid white; /* Optional: Adds a border for better contrast */
+    }
+
+    .heading {
+      font-size: 32px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .heading span {
+      font-size: 36px;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 60px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .puzzle-button {
+      width: 140px;
+      height: 140px;
+      background-color: white;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .puzzle-button:hover {
+      transform: scale(1.05);
+    }
+
+    .grid-icon {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+
+    .grid-icon.small {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-icon.large {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .cell {
+      width: 100%;
+      height: 100%;
+      background-color: #333;
+    }
+
+    .label {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .back-button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #f1c40f;
+      border-radius: 10px;
+      color: #333;
+      font-size: 18px;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .back-button:hover {
+      transform: scale(1.05);
+      background-color: #f39c12;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  </div>
+  <div class="heading">
+    Choose the puzzle size <span>🧩</span>
+  </div>
+
+  <div class="button-container">
+    <a href="9.html" class="puzzle-button">
+      <div class="grid-icon small">
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+      <div class="label">3 × 3</div>
+    </a>
+
+    <a href="16.html" class="puzzle-button">
+      <div class="grid-icon large">
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+      <div class="label">4 × 4</div>
+    </a>
+  </div>
+
+  <a href="menu.html" class="back-button">← Back</a>
+
+</body>
+</html>

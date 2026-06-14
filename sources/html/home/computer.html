@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Duel - Options</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #8360c3, #2ebf91);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+    }
+
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px; /* Align to the left */
+      z-index: 1000;
+    }
+
+    .logo-container img {
+      width: 60px; /* Adjust size as needed */
+      height: 60px; /* Adjust size as needed */
+      border-radius: 50%; /* Makes the image circular */
+      object-fit: cover; /* Ensures the image fits within the circle */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
+      border: 2px solid white; /* Optional: Adds a border for better contrast */
+    }
+
+    .logo {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 50px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 200px);
+      grid-gap: 50px;
+    }
+
+    .square-button {
+      width: 200px;
+      height: 200px;
+      background-color: white;
+      color: #333;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 70px;
+      font-weight: bold;
+      cursor: pointer;
+      flex-direction: column;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s;
+      text-decoration: none;
+    }
+
+    .square-button:hover {
+      transform: scale(1.05);
+    }
+
+    .game-label {
+      margin-top: 12px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+      text-align: center;
+    }
+
+    .back-button {
+      margin-top: 50px;
+      padding: 10px 20px;
+      background-color: #f1c40f;
+      border-radius: 10px;
+      color: #333;
+      font-size: 18px;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .back-button:hover {
+      transform: scale(1.05);
+      background-color: #f39c12;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  </div>
+  <div class="logo">🧠 Math Duel (single)</div>
+
+  <div class="button-grid">
+    <div>
+      <a href="game1.html" class="square-button">🧮</a>
+      <div class="game-label">Calculator</div>
+    </div>
+    
+    <div>
+      <a href="sliding.html" class="square-button">🧩</a>
+      <div class="game-label">Sliding</div>
+    </div>
+    
+    <div>
+      <a href="hectoc.html" class="square-button">⚡</a>
+      <div class="game-label">Hecto challenge</div>
+    </div>
+    
+    <div>
+      <a href="game4.html" class="square-button">🔥</a>
+      <div class="game-label">Game 4</div>
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <a href="index.html" class="back-button">← Back</a>
+</body>
+</html>

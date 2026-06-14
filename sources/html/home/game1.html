@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Math Duel - VS Computer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #14213d;
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      margin: 60px auto;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    input {
+      width: 100px;
+      padding: 8px;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      background-color: yellow;
+      color: black;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .winner {
+      font-size: 22px;
+      color: #ffcc00;
+      margin-top: 20px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .back-button, .restart-button {
+      padding: 10px 20px;
+      background-color: #f1c40f;
+      border-radius: 10px;
+      color: #333;
+      font-size: 18px;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+      border: none;
+    }
+
+    .back-button:hover:enabled,
+    .restart-button:hover:enabled {
+      transform: scale(1.05);
+      background-color: #f39c12;
+    }
+
+    .restart-button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: #ff6347;
+    }
+
+    .logo-container {
+      position: absolute;
+      top: 20px;
+      left: 20px; /* Align to the left */
+      z-index: 1000;
+    }
+
+    .logo-container img {
+      width: 60px; /* Adjust size as needed */
+      height: 60px; /* Adjust size as needed */
+      border-radius: 50%; /* Makes the image circular */
+      object-fit: cover; /* Ensures the image fits within the circle */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Adds a shadow for better visibility */
+      border: 2px solid white; /* Optional: Adds a border for better contrast */
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <img src="magic-maths-logo.png" alt="Magic Maths Logo">
+  </div>
+  <div class="container">
+    <h1>Math Duel - VS Computer</h1>
+    <p id="question"></p>
+    <input type="number" id="player" placeholder="Your Answer" />
+    <br />
+    <button onclick="checkAnswer()" id="submitBtn">Submit</button>
+    <p id="score1">Your Score: 0</p>
+    <p id="score2">Computer: 0</p>
+    <p id="mistakes">Mistakes: 0</p>
+    <p id="computerAnswer"></p>
+    <p id="winner" class="winner"></p>
+    <p id="timer">Time Left: 5:00</p>
+
+    <div class="button-row">
+      <a href="computer.html" class="back-button" id="backButton">← Back</a>
+      <button class="restart-button" id="restartButton" onclick="restartGame()">⟳ Restart</button>
+    </div>
+  </div>
+
+  <script>
+    let num1, num2, answer, operator;
+    let playerScore = 0;
+    let computerScore = 0;
+    let playerMistakes = 0;
+    let gameOver = false;
+    let timerInterval;
+    let timeLeft = 300;
+    let answerTimeout;
+    let totalQuestions = 0;
+    let correctComputerAnswers = 0;
+    let computerAnswer;
+
+    function generateQuestion() {
+      if (gameOver || playerMistakes >= 5) {
+        endGame();
+        return;
+      }
+
+      const operations = ['+', '-', '*', '/'];
+      operator = operations[Math.floor(Math.random() * operations.length)];
+
+      num1 = Math.floor(Math.random() * 10) + 1;
+      num2 = Math.floor(Math.random() * 10) + 1;
+
+      if (operator === '/') num1 *= num2;
+
+      switch (operator) {
+        case '+': answer = num1 + num2; break;
+        case '-': answer = num1 - num2; break;
+        case '*': answer = num1 * num2; break;
+        case '/': answer = num1 / num2; break;
+      }
+
+      document.getElementById("question").innerText = `What is ${num1} ${operator} ${num2}?`;
+
+      totalQuestions++;
+
+      if (totalQuestions % 5 <= 2) {
+        computerAnswer = answer;
+        correctComputerAnswers++;
+        computerScore++;
+      } else {
+        const offset = Math.floor(Math.random() * 3) + 1;
+        computerAnswer = Math.random() < 0.5 ? answer + offset : answer - offset;
+      }
+
+      document.getElementById("computerAnswer").innerText = `Computer's Answer: ${computerAnswer}`;
+      document.getElementById("score2").innerText = `Computer: ${computerScore}`;
+
+      answerTimeout = setTimeout(() => {
+        if (!gameOver) {
+          playerMistakes++;
+          document.getElementById("mistakes").innerText = `Mistakes: ${playerMistakes}`;
+          generateQuestion();
+        }
+      }, 10000); // 10 seconds
+
+      document.getElementById("player").disabled = false;
+      document.getElementById("submitBtn").disabled = false;
+    }
+
+    function checkAnswer() {
+      if (gameOver) return;
+
+      clearTimeout(answerTimeout);
+      const playerInput = parseFloat(document.getElementById("player").value);
+
+      if (Math.abs(playerInput - answer) < 0.01) {
+        playerScore++;
+      } else {
+        playerMistakes++;
+      }
+
+      document.getElementById("score1").innerText = `Your Score: ${playerScore}`;
+      document.getElementById("mistakes").innerText = `Mistakes: ${playerMistakes}`;
+      document.getElementById("player").value = "";
+      document.getElementById("player").disabled = true;
+      document.getElementById("submitBtn").disabled = true;
+
+      if (playerMistakes >= 5) {
+        document.getElementById("winner").innerText = "❌ Game Over - You made 5 mistakes!";
+        endGame();
+        return;
+      }
+
+      setTimeout(() => {
+        if (!gameOver) {
+          generateQuestion();
+        }
+      }, 10000); // 10 seconds
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timer").innerText = `Time Left: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+  gameOver = true;
+  clearTimeout(answerTimeout);
+  clearInterval(timerInterval);
+
+  document.getElementById("winner").innerText =
+    playerMistakes >= 5
+      ? "❌ Game Over - You made 5 mistakes!"
+      : playerScore > computerScore
+      ? "🎉 You Win!"
+      : "❌ You Lose!";
+
+  // Removed lines that disable buttons
+  // document.getElementById("restartButton").disabled = true;
+  // document.getElementById("backButton").disabled = true;
+}
+
+
+    function restartGame() {
+      playerScore = 0;
+      computerScore = 0;
+      playerMistakes = 0;
+      timeLeft = 300;
+      totalQuestions = 0;
+      correctComputerAnswers = 0;
+      gameOver = false;
+
+      document.getElementById("winner").innerText = "";
+      document.getElementById("score1").innerText = `Your Score: 0`;
+      document.getElementById("score2").innerText = `Computer: 0`;
+      document.getElementById("mistakes").innerText = `Mistakes: 0`;
+      document.getElementById("computerAnswer").innerText = "";
+      document.getElementById("player").value = "";
+      document.getElementById("restartButton").disabled = false;
+      document.getElementById("backButton").disabled = false;
+
+      startTimer();
+      generateQuestion();
+    }
+
+    // Initialize game
+    generateQuestion();
+    startTimer();
+
+    document.getElementById("player").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+  </script>
+</body>
+</html>

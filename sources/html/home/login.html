@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #00c9ff, #92fe9d);
+            background-color: #f5f5f5; /* Fallback color */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: rgba(227,186,143, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .login-header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        #signInMessage {
+            display: none;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+            background-color: rgba(255, 0, 0, 0.2);
+            color: #333;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .forgot-password a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .login-button:hover {
+            background-color: #3e8e41;
+        }
+
+        /* Loading spinner styles */
+        .button--loading {
+            position: relative;
+            color: transparent;
+        }
+        
+        .button--loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .signup-link a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .social-login {
+            margin-top: 35px;
+        }
+
+        .social-login p {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .social-login p::before,
+        .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .social-login p::before {
+            left: 0;
+        }
+
+        .social-login p::after {
+            right: 0;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media screen and (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+            
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Please enter your credentials to login</p>
+        </div>
+        
+        <div id="signInMessage"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="lemail">Email</label>
+                <input type="email" id="lemail" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="lpassword">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="lpassword" placeholder="Enter your password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="remember-forgot">
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <div class="forgot-password">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+            
+            <button type="submit" class="login-button" id="submitlogin">Login</button>
+        </form>
+        
+        <div class="signup-link">
+            <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+        </div>
+        
+        <div class="social-login">
+            <p>Or continue with</p>
+            <div class="social-icons">
+                <!-- Social icons would go here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('lpassword');
+            const toggleIcon = document.querySelector('.toggle-password i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+    </script>
+    
+    <!-- Firebase Scripts -->
+    <script type="module">
+        // Import the functions you need from the SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-Etg27X80V_DlC_AsRbhKPmTnJfJOIQM",
+            authDomain: "hectolash.firebaseapp.com",
+            projectId: "hectolash",
+            storageBucket: "hectolash.appspot.com", // Fixed storage bucket URL
+            messagingSenderId: "712534964422",
+            appId: "1:712534964422:web:7052fc30cbca6ca2f3ffc7",
+            measurementId: "G-K8K0M8NQ1V"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // Function to display messages
+        function showMessage(message, divId) {
+            const messageDiv = document.getElementById(divId);
+            if (messageDiv) {
+                messageDiv.style.display = "block";
+                messageDiv.innerHTML = message;
+                messageDiv.style.opacity = 1;
+                setTimeout(function() {
+                    messageDiv.style.opacity = 0;
+                }, 5000);
+            }
+        }
+
+        // Get the login form
+        const loginForm = document.getElementById('loginForm');
+        const submitlogin = document.getElementById('submitlogin');
+        
+        if (loginForm) {
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                
+                submitlogin.classList.add('button--loading');
+                submitlogin.disabled = true;
+                
+                const email = document.getElementById('lemail').value;
+                const password = document.getElementById('lpassword').value;
+                
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        showMessage('Login successful', 'signInMessage');
+                        const user = userCredential.user;
+                        localStorage.setItem('loggedInUserId', user.uid);
+                        
+                        // Redirect after a short delay
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        
+                        if (errorCode === 'auth/invalid-credential') {
+                            showMessage('Incorrect Email or Password', 'signInMessage');
+                        } else {
+                            showMessage('Account does not Exist', 'signInMessage');
+                        }
+                    })
+                    .finally(() => {
+                        // Remove loading state
+                        submitlogin.classList.remove('button--loading');
+                        submitlogin.disabled = false;
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
