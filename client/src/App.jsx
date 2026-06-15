@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import ComputerMenu from './pages/ComputerMenu';
 import MultiplayerMenu from './pages/MultiplayerMenu';
 import HectocSolo from './pages/games/HectocSolo';
+import Calculator from './pages/games/Calculator';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/computer" element={<ProtectedRoute><ComputerMenu /></ProtectedRoute>} />
           <Route path="/multiplayer" element={<ProtectedRoute><MultiplayerMenu /></ProtectedRoute>} />
           <Route path="/game/hectoc-solo" element={<ProtectedRoute><HectocSolo /></ProtectedRoute>} />
+          <Route path="/game/calculator" element={<ProtectedRoute><Calculator /></ProtectedRoute>} />
         </Routes>
       </div>
     </Router>
