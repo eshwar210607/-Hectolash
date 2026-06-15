@@ -6,6 +6,7 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import ComputerMenu from './pages/ComputerMenu';
 import MultiplayerMenu from './pages/MultiplayerMenu';
+import HectocSolo from './pages/games/HectocSolo';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/computer" element={<ProtectedRoute><ComputerMenu /></ProtectedRoute>} />
           <Route path="/multiplayer" element={<ProtectedRoute><MultiplayerMenu /></ProtectedRoute>} />
+          <Route path="/game/hectoc-solo" element={<ProtectedRoute><HectocSolo /></ProtectedRoute>} />
         </Routes>
       </div>
     </Router>
