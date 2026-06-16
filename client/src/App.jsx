@@ -8,6 +8,11 @@ import ComputerMenu from './pages/ComputerMenu';
 import MultiplayerMenu from './pages/MultiplayerMenu';
 import HectocSolo from './pages/games/HectocSolo';
 import Calculator from './pages/games/Calculator';
+import Sliding from './pages/games/Sliding';
+import HectocMulti from './pages/games/HectocMulti';
+import CalculatorMulti from './pages/games/CalculatorMulti';
+import SlidingMulti from './pages/games/SlidingMulti';
+
 
 function App() {
   return (
@@ -22,6 +27,10 @@ function App() {
           <Route path="/multiplayer" element={<ProtectedRoute><MultiplayerMenu /></ProtectedRoute>} />
           <Route path="/game/hectoc-solo" element={<ProtectedRoute><HectocSolo /></ProtectedRoute>} />
           <Route path="/game/calculator" element={<ProtectedRoute><Calculator /></ProtectedRoute>} />
+          <Route path="/game/sliding" element={<ProtectedRoute><Sliding /></ProtectedRoute>} />
+          <Route path="/game/hectoc-multi" element={<ProtectedRoute><HectocMulti /></ProtectedRoute>} />
+          <Route path="/game/calculator-multi" element={<ProtectedRoute><CalculatorMulti /></ProtectedRoute>} />
+          <Route path="/game/sliding-multi" element={<ProtectedRoute><SlidingMulti /></ProtectedRoute>} />
         </Routes>
       </div>
     </Router>
