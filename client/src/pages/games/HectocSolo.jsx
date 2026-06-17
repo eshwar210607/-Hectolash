@@ -11,7 +11,6 @@ const playSound = (type) => {
   gainNode.connect(ctx.destination);
 
   if (type === 'win') {
-    // Happy ascending melody
     const notes = [523, 659, 784, 1047];
     notes.forEach((freq, i) => {
       const osc = ctx.createOscillator();
@@ -91,9 +90,9 @@ const Confetti = () => {
           90% { transform: translateX(3px); }
         }
         @keyframes hintPulse {
-          0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.6); }
-          50% { box-shadow: 0 0 0 12px rgba(245,158,11,0); }
-          100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+          0% { box-shadow: 0 0 0 0 rgba(124,58,237,0.6); }
+          50% { box-shadow: 0 0 0 12px rgba(124,58,237,0); }
+          100% { box-shadow: 0 0 0 0 rgba(124,58,237,0); }
         }
         @keyframes winGlow {
           0% { box-shadow: 0 0 20px rgba(16,185,129,0.3); }
@@ -104,6 +103,11 @@ const Confetti = () => {
           0% { transform: scale(0.5); opacity: 0; }
           70% { transform: scale(1.1); }
           100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes hintGlow {
+          0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); }
+          50% { box-shadow: 0 0 0 14px rgba(245,158,11,0); }
+          100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
         }
         .shake-anim { animation: shake 0.5s ease; }
         .hint-anim { animation: hintPulse 0.6s ease; }
@@ -143,6 +147,7 @@ const HectocSolo = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [shakeInput, setShakeInput] = useState(false);
   const [hintAnim, setHintAnim] = useState(false);
+  const [loadingAi, setLoadingAi] = useState(false);
 
   // Timer
   const [timerEnabled, setTimerEnabled] = useState(false);
@@ -224,38 +229,73 @@ const HectocSolo = () => {
     setTimeout(() => setHintAnim(false), 600);
   };
 
-  const getHint = () => {
+  const getHint = async () => {
     if (gameStatus !== 'playing' || !solution) return;
     playSound('hint');
     triggerHintAnim();
+    setLoadingAi(true);
 
     const digits = sequence.split('');
     const solOps = solution.match(/[+\-*/]/g) || [];
     const userOps = userInput.match(/[+\-*/]/g) || [];
-    const userDigits = userInput.replace(/[+\-*/]/g, '').split('').filter(Boolean);
 
-    for (let i = 0; i < userDigits.length; i++) {
-      if (userDigits[i] !== digits[i]) {
-        setHintText(`❌ Digit mistake at position ${i + 1}. You used "${userDigits[i]}" but it should be "${digits[i]}". Go back and fix!`);
-        setHintsUsed(h => h + 1);
-        return;
+    let diagnosticMessage = '';
+
+    // Check 1: Live double-digit clumping layout error validation (e.g., '52' instead of separate values)
+    const multiDigitMatch = userInput.match(/[0-9]{2,}/);
+    if (multiDigitMatch) {
+      diagnosticMessage = `There is a typing mistake, please correct it to go forward! You typed multiple digits together as "${multiDigitMatch[0]}" without an operator separating them. Hectoc rules strictly require single standalone digits. Tell them to backspace and correct this cluster typo layout before proceeding.`;
+    }
+
+    // Check 2: Missing or out of order digit index tracker sequence
+    if (!diagnosticMessage) {
+      const userDigits = userInput.replace(/[+\-*/]/g, '').split('').filter(Boolean);
+      for (let i = 0; i < userDigits.length; i++) {
+        if (userDigits[i] !== digits[i]) {
+          diagnosticMessage = `Digit mistake at step ${i + 1}. The player typed "${userDigits[i]}" but it must be "${digits[i]}". Advise them to delete the error and go back.`;
+          break;
+        }
       }
     }
 
-    for (let i = 0; i < userOps.length; i++) {
-      if (userOps[i] !== solOps[i]) {
-        setHintText(`💡 Operator ${i + 1} is wrong. You used "${userOps[i]}" — try a different one at position ${i + 1} and go back from there.`);
-        setHintsUsed(h => h + 1);
-        return;
+    // Check 3: Operator path tracking divergence engine
+    if (!diagnosticMessage) {
+      for (let i = 0; i < userOps.length; i++) {
+        if (userOps[i] !== solOps[i]) {
+          diagnosticMessage = `Operator mistake at operator position ${i + 1}. They applied "${userOps[i]}", but that path deviates from our solution. Tell them exactly where the wrong operator is and instruct them to backspace from that spot.`;
+          break;
+        }
       }
     }
 
-    const nextOpIndex = userOps.length;
-    if (nextOpIndex < solOps.length) {
-      setHintText(`✨ You're on track! Next operator should be "${solOps[nextOpIndex]}" at position ${nextOpIndex + 1}.`);
+    // Check 4: Balanced execution pathway -> Provide the next required calculation element
+    if (!diagnosticMessage) {
+      const nextOpIndex = userOps.length;
+      if (nextOpIndex < solOps.length) {
+        diagnosticMessage = `The user is completely on the right path! Tell them the next operator they need to apply is "${solOps[nextOpIndex]}" at operator position ${nextOpIndex + 1}. Provide this tip with high wizard energy.`;
+      } else {
+        diagnosticMessage = `All of the operations match our target footprint perfectly. Tell them to press the submit button to clear the arena.`;
+      }
+    }
+
+    try {
+      const response = await fetch('/api/ai/hint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sequence,
+          userInput,
+          targetSolution: solution,
+          diagnostic: diagnosticMessage
+        })
+      });
+      const data = await response.json();
+      setHintText(data.hint || 'Focus your mind, wizard. The patterns are revealing themselves.');
       setHintsUsed(h => h + 1);
-    } else {
-      setHintText('🎯 All operators are correct! Submit your answer.');
+    } catch (error) {
+      setHintText('Connection to the arcane tower was interrupted, but keep pushing forward!');
+    } finally {
+      setLoadingAi(false);
     }
   };
 
@@ -327,37 +367,6 @@ const HectocSolo = () => {
       margin: '0 auto',
       position: 'relative',
     }}>
-      <style>{`
-        @keyframes confettiFall {
-          0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        @keyframes shake {
-          0%,100% { transform: translateX(0); }
-          15% { transform: translateX(-8px); }
-          30% { transform: translateX(8px); }
-          45% { transform: translateX(-6px); }
-          60% { transform: translateX(6px); }
-          75% { transform: translateX(-3px); }
-          90% { transform: translateX(3px); }
-        }
-        @keyframes winGlow {
-          0% { box-shadow: 0 0 20px rgba(16,185,129,0.3); }
-          50% { box-shadow: 0 0 60px rgba(16,185,129,0.6), 0 0 100px rgba(16,185,129,0.2); }
-          100% { box-shadow: 0 0 20px rgba(16,185,129,0.3); }
-        }
-        @keyframes popIn {
-          0% { transform: scale(0.5); opacity: 0; }
-          70% { transform: scale(1.1); }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes hintGlow {
-          0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); }
-          50% { box-shadow: 0 0 0 14px rgba(245,158,11,0); }
-          100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
-        }
-      `}</style>
-
       {showConfetti && <Confetti />}
 
       {/* Background glow */}
@@ -593,16 +602,21 @@ const HectocSolo = () => {
         }}>{message}</div>
       )}
 
-      {/* Hint display */}
+      {/* Hint display with Glassmorphic ARIA Layout */}
       {hintText && (
         <div style={{
-          background: 'rgba(245,158,11,0.1)',
-          border: '1px solid rgba(245,158,11,0.3)',
-          color: '#fcd34d', padding: '14px 18px',
-          borderRadius: '12px', marginBottom: '16px',
-          fontSize: '0.9rem', position: 'relative', zIndex: 1,
+          background: 'rgba(124,58,237,0.1)',
+          border: '1px solid rgba(139,92,246,0.3)',
+          borderRadius: '12px', padding: '12px 16px',
+          marginTop: '12px', marginBottom: '16px', fontSize: '0.875rem',
+          color: '#c4b5fd', fontStyle: 'italic',
+          position: 'relative', zIndex: 1,
+          display: 'flex', alignItems: 'center', gap: '8px',
           animation: hintAnim ? 'hintGlow 0.6s ease' : 'none',
-        }}>{hintText}</div>
+        }}>
+          <span style={{ fontStyle: 'normal', fontWeight: 'bold', color: '#a78bfa' }}>🤖 ARIA:</span>
+          {loadingAi ? 'Analyzing sequence parameters...' : hintText}
+        </div>
       )}
 
       {/* Solution display */}
@@ -622,14 +636,18 @@ const HectocSolo = () => {
       {/* Action buttons */}
       {gameStatus === 'playing' && (
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
-          <button onClick={getHint} style={{
-            background: 'rgba(245,158,11,0.15)',
-            border: '1px solid rgba(245,158,11,0.3)',
-            borderRadius: '12px', padding: '12px 20px',
-            color: '#fcd34d', fontWeight: 600,
-            fontSize: '0.875rem', cursor: 'pointer',
-          }}>
-            💡 Hint {hintsUsed > 0 ? `(${hintsUsed})` : ''}
+          <button 
+            onClick={getHint} 
+            disabled={loadingAi}
+            style={{
+              background: 'rgba(245,158,11,0.15)',
+              border: '1px solid rgba(245,158,11,0.3)',
+              borderRadius: '12px', padding: '12px 20px',
+              color: '#fcd34d', fontWeight: 600,
+              fontSize: '0.875rem', cursor: loadingAi ? 'wait' : 'pointer',
+            }}
+          >
+            💡 Ask ARIA {hintsUsed > 0 ? `(${hintsUsed})` : ''}
           </button>
           <button onClick={() => setShowSolution(s => !s)} style={{
             background: 'rgba(99,102,241,0.15)',

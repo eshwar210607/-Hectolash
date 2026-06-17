@@ -10,9 +10,9 @@ const games = [
     path: '/game/hectoc-solo',
   },
   {
-    title: 'Calculator Duel',
-    description: 'Solve math problems faster than the computer',
-    emoji: '⚡',
+    title: 'VS ARIA',
+  description: 'Challenge our AI in solo math duels',
+  emoji: '🤖',
     gradient: 'linear-gradient(135deg, #ec4899, #f43f5e)',
     shadow: 'rgba(236,72,153,0.4)',
     path: '/game/calculator',
@@ -78,7 +78,7 @@ const ComputerMenu = () => {
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>
-            Computer
+            ARIA
           </span>
         </h1>
         <p style={{ color: '#6b7280', fontSize: '1rem', margin: 0 }}>

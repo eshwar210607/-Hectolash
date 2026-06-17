@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCommentary, explainMistake, getAdaptiveDifficulty } from '../../utils/aiService';
 
 const playSound = (type) => {
   try {
@@ -127,10 +128,12 @@ export default function Calculator() {
   const [winner, setWinner] = useState(null);
   const [questionLock, setQuestionLock] = useState(false);
   const [computerDelay, setComputerDelay] = useState(null);
+  const [aiComment, setAiComment] = useState('');
 
   const timerRef = useRef(null);
   const computerRef = useRef(null);
   const inputRef = useRef(null);
+  const questionStartTime = useRef(Date.now());
 
   useEffect(() => {
     return () => {
@@ -175,13 +178,15 @@ export default function Calculator() {
     computerRef.current = setTimeout(() => {
       setQuestionLock(prev => {
         if (!prev) {
-          // Computer gets the point
           const newCScore = cScore + 1;
           setComputerScore(newCScore);
           playSound('timeout');
           setFeedback({ type: 'computer', text: `🤖 Computer answered first! The answer was ${q.answer}` });
           setQuestionLock(true);
-          setTimeout(() => nextQuestion(pScore, newCScore, r + 1), 1800);
+          setTimeout(() => {
+            setAiComment('');
+            nextQuestion(pScore, newCScore, r + 1);
+          }, 1800);
         }
         return true;
       });
@@ -197,7 +202,10 @@ export default function Calculator() {
       }
     }, 1000);
 
-    setTimeout(() => inputRef.current?.focus(), 100);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      questionStartTime.current = Date.now(); // Reset stopwatch on frame anchor load
+    }, 100);
   }, []);
 
   const startGame = () => {
@@ -206,6 +214,7 @@ export default function Calculator() {
     setRound(1);
     setWinner(null);
     setFeedback(null);
+    setAiComment('');
     setShowConfetti(false);
     setGameState('playing');
     nextQuestion(0, 0, 1);
@@ -224,12 +233,22 @@ export default function Calculator() {
     clearTimeout(computerRef.current);
     setQuestionLock(true);
 
+    const responseTime = ((Date.now() - questionStartTime.current) / 1000).toFixed(1);
+
     if (val === question.answer) {
       playSound('correct');
       const newPScore = playerScore + 1;
       setPlayerScore(newPScore);
       setFeedback({ type: 'correct', text: `✅ Correct! +1 point` });
-      setTimeout(() => nextQuestion(newPScore, computerScore, round + 1), 1200);
+      
+      getCommentary(true, val, question.answer, question.question, responseTime, newPScore, computerScore)
+        .then(comment => setAiComment(comment))
+        .catch(() => setAiComment('Excellent calculation velocity!'));
+
+      setTimeout(() => {
+        setAiComment('');
+        nextQuestion(newPScore, computerScore, round + 1);
+      }, 3500);
     } else {
       playSound('wrong');
       setShakeInput(true);
@@ -237,7 +256,15 @@ export default function Calculator() {
       const newCScore = computerScore + 1;
       setComputerScore(newCScore);
       setFeedback({ type: 'wrong', text: `❌ Wrong! Answer was ${question.answer}. Computer gets the point.` });
-      setTimeout(() => nextQuestion(playerScore, newCScore, round + 1), 1800);
+      
+      explainMistake(question.question, val, question.answer)
+        .then(explanation => setAiComment(explanation))
+        .catch(() => setAiComment('Keep studying, your analytical model is highly solid!'));
+
+      setTimeout(() => {
+        setAiComment('');
+        nextQuestion(playerScore, newCScore, round + 1);
+      }, 4500);
     }
   };
 
@@ -353,7 +380,7 @@ export default function Calculator() {
 
       {/* PLAYING screen */}
       {gameState === 'playing' && question && (
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div style={{ position: 'relative', zIndex: 1 }} className="space-y-4">
 
           {/* Score board */}
           <div style={{
@@ -494,8 +521,8 @@ export default function Calculator() {
             >Submit</button>
           </div>
 
-          {/* Feedback */}
-          {feedback && (() => {
+{/* Feedback Section Row Layout */}
+{feedback && (() => {
             const fc = feedbackColors[feedback.type] || feedbackColors.wrong;
             return (
               <div style={{
@@ -506,6 +533,21 @@ export default function Calculator() {
               }}>{feedback.text}</div>
             );
           })()}
+
+          {/* AI Partner Real-time Commentary Feedback Container */}
+          {aiComment && (
+            <div style={{
+              background: 'rgba(124,58,237,0.1)',
+              border: '1px solid rgba(139,92,246,0.3)',
+              borderRadius: '12px', padding: '12px 16px',
+              marginTop: '12px', fontSize: '0.875rem',
+              color: '#c4b5fd', fontStyle: 'italic',
+              display: 'flex', alignItems: 'center', gap: '8px',
+              animation: 'popIn 0.3s ease forwards'
+            }}>
+              <span style={{ fontStyle: 'normal', fontWeight: 'bold', color: '#a78bfa' }}>🤖 ARIA:</span> {aiComment}
+            </div>
+          )}
         </div>
       )}
 

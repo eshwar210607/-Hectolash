@@ -25,7 +25,7 @@ const Home = () => {
 
   const gameModes = [
     {
-      title: 'VS Computer',
+      title: 'VS ARIA',
       description: 'Challenge our AI in solo math duels',
       emoji: '🤖',
       gradient: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
