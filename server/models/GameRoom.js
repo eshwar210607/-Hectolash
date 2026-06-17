@@ -21,6 +21,17 @@ const GameRoomSchema = new mongoose.Schema({
       type: Number,
       default: 0,
     },
+    // =========================================================================
+    // ⚔️ NEW FIELD EXTENSIONS (Safe for your existing documents)
+    // =========================================================================
+    isFinished: {
+      type: Boolean,
+      default: false, // Tracks if this combatant completed their 100 evaluation matrix
+    },
+    expression: {
+      type: String,
+      default: '', // Stores the final draft math expression string submitted
+    }
   }],
   status: {
     type: String,
