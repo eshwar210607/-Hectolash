@@ -38,4 +38,27 @@ router.get('/leaderboard', async (req, res) => {
   }
 });
 
+// =========================================================================
+// ⚔️ REAL-TIME LOBBY USER FETCH EXTENSION ROUTE
+// =========================================================================
+
+// @route   GET /api/user/lobby-players
+// @desc    Get all active online users excluding the current player
+// @access  Private
+router.get('/lobby-players', auth, async (req, res) => {
+  try {
+    // Find all users who are currently marked online
+    // Exclude the current request user id, and strip the password hash for safety
+    const onlinePlayers = await User.find({
+      _id: { $ne: req.user.id },
+      isOnline: true
+    }).select('name score lobbyStatus');
+
+    res.json(onlinePlayers);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error fetching online lobby pool');
+  }
+});
+
 module.exports = router;
