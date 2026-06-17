@@ -1,9 +1,12 @@
+// 🌟 MISTAKE FIXED: This must be line 1 so all environmental keys are ready instantly!
+require('dotenv').config();
+
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
+const aiRoutes = require('./routes/ai'); // Safe to load now!
 
 // Initialize Express App
 const app = express();
@@ -30,6 +33,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', require('./routes/user'));
 app.use('/api/game', require('./routes/game'));
+app.use('/api/ai', aiRoutes);
 
 // Initialize Real-time Socket Handler
 require('./socket/gameHandler')(io);
