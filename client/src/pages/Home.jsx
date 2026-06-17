@@ -46,7 +46,8 @@ const Home = () => {
       emoji: '🌍',
       gradient: 'linear-gradient(135deg, #06b6d4, #0891b2)',
       shadow: 'rgba(6,182,212,0.4)',
-      path: '/online-duel',
+      // 🚀 FIXED MISTAKE: Routes directly to your live real-time websocket lobby now!
+      path: '/game/online-lobby', 
     },
   ];
 
@@ -185,7 +186,7 @@ const Home = () => {
           border: '1px solid rgba(139,92,246,0.2)',
           borderRadius: '20px',
           overflow: 'hidden',
-        }}>
+         }}>
           {/* Table Header */}
           <div style={{
             display: 'grid',
