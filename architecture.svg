@@ -1,0 +1,132 @@
+<svg width="100%" viewBox="0 0 680 780" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Maths Wizard system architecture</title>
+  <desc>Three-layer architecture: React client, Node.js/Express server, and data/AI services</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .th { font-size: 14px; font-weight: 600; fill: #1a1a2e; }
+      .ts { font-size: 12px; fill: #4b5563; }
+      .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+      .c-purple text { fill: #3C3489; }
+      .c-teal rect { fill: #E1F5EE; stroke: #0F6E56; }
+      .c-teal text { fill: #085041; }
+      .c-blue rect { fill: #E6F1FB; stroke: #185FA5; }
+      .c-blue text { fill: #0C447C; }
+      .c-amber rect { fill: #FAEEDA; stroke: #854F0B; }
+      .c-amber text { fill: #633806; }
+      .box { fill: #f9fafb; stroke: #d1d5db; }
+      .arr { stroke: #888780; fill: none; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="680" height="780" fill="#f8f9fa"/>
+
+  <!-- Layer labels -->
+  <text class="ts" x="20" y="148" text-anchor="middle" transform="rotate(-90,20,148)" style="font-weight:600;fill:#6b7280">CLIENT</text>
+  <text class="ts" x="20" y="400" text-anchor="middle" transform="rotate(-90,20,400)" style="font-weight:600;fill:#6b7280">SERVER</text>
+  <text class="ts" x="20" y="650" text-anchor="middle" transform="rotate(-90,20,650)" style="font-weight:600;fill:#6b7280">SERVICES</text>
+
+  <!-- CLIENT LAYER -->
+  <g class="c-purple">
+    <rect x="44" y="40" width="592" height="200" rx="14" stroke-width="0.5"/>
+    <text class="th" x="340" y="66" text-anchor="middle">React Client · Vite + Tailwind CSS v4</text>
+  </g>
+  <g class="c-purple"><rect x="64" y="84" width="130" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="129" y="106" text-anchor="middle" dominant-baseline="central">Auth Context</text>
+    <text class="ts" x="129" y="124" text-anchor="middle" dominant-baseline="central">JWT · localStorage</text></g>
+  <g class="c-purple"><rect x="214" y="84" width="130" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="279" y="106" text-anchor="middle" dominant-baseline="central">8 Game Pages</text>
+    <text class="ts" x="279" y="124" text-anchor="middle" dominant-baseline="central">React Router v6</text></g>
+  <g class="c-purple"><rect x="364" y="84" width="130" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="429" y="106" text-anchor="middle" dominant-baseline="central">Socket.io Client</text>
+    <text class="ts" x="429" y="124" text-anchor="middle" dominant-baseline="central">Real-time events</text></g>
+  <g class="c-purple"><rect x="514" y="84" width="112" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="570" y="106" text-anchor="middle" dominant-baseline="central">Utils</text>
+    <text class="ts" x="570" y="124" text-anchor="middle" dominant-baseline="central">mathEngine · aiService</text></g>
+
+  <text class="ts" x="129" y="158" text-anchor="middle">login / register / logout</text>
+  <text class="ts" x="279" y="158" text-anchor="middle">solo · multi · online</text>
+  <text class="ts" x="429" y="158" text-anchor="middle">lobby · duel · progress</text>
+  <text class="ts" x="570" y="158" text-anchor="middle">DFS · Gemini calls</text>
+
+  <!-- ARROWS CLIENT → SERVER -->
+  <line x1="240" y1="240" x2="240" y2="298" class="arr" stroke="#7F77DD" marker-end="url(#arrow)"/>
+  <text class="ts" x="248" y="274" style="fill:#534AB7">HTTP / REST</text>
+  <line x1="430" y1="240" x2="430" y2="298" class="arr" stroke="#1D9E75" marker-end="url(#arrow)"/>
+  <text class="ts" x="438" y="274" style="fill:#0F6E56">WebSocket</text>
+
+  <!-- SERVER LAYER -->
+  <g class="c-teal">
+    <rect x="44" y="298" width="592" height="210" rx="14" stroke-width="0.5"/>
+    <text class="th" x="340" y="324" text-anchor="middle">Node.js · Express · Socket.io Server</text>
+  </g>
+  <g class="c-teal"><rect x="64" y="342" width="108" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="118" y="362" text-anchor="middle" dominant-baseline="central">/api/auth</text>
+    <text class="ts" x="118" y="380" text-anchor="middle" dominant-baseline="central">register · login</text></g>
+  <g class="c-teal"><rect x="184" y="342" width="108" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="238" y="362" text-anchor="middle" dominant-baseline="central">/api/user</text>
+    <text class="ts" x="238" y="380" text-anchor="middle" dominant-baseline="central">profile · leaderboard</text></g>
+  <g class="c-teal"><rect x="304" y="342" width="108" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="358" y="362" text-anchor="middle" dominant-baseline="central">/api/game</text>
+    <text class="ts" x="358" y="380" text-anchor="middle" dominant-baseline="central">create · join · duel</text></g>
+  <g class="c-teal"><rect x="424" y="342" width="108" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="478" y="362" text-anchor="middle" dominant-baseline="central">/api/ai</text>
+    <text class="ts" x="478" y="380" text-anchor="middle" dominant-baseline="central">hint · commentary</text></g>
+  <g class="c-teal"><rect x="544" y="342" width="82" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="585" y="362" text-anchor="middle" dominant-baseline="central">Socket</text>
+    <text class="ts" x="585" y="380" text-anchor="middle" dominant-baseline="central">gameHandler</text></g>
+
+  <rect x="64" y="412" width="192" height="36" rx="8" class="box" stroke-width="0.5"/>
+  <text class="ts" x="160" y="430" text-anchor="middle" dominant-baseline="central">authMiddleware · JWT verify</text>
+  <rect x="268" y="412" width="144" height="36" rx="8" class="box" stroke-width="0.5"/>
+  <text class="ts" x="340" y="430" text-anchor="middle" dominant-baseline="central">bcryptjs · password hash</text>
+  <rect x="424" y="412" width="202" height="36" rx="8" class="box" stroke-width="0.5"/>
+  <text class="ts" x="525" y="430" text-anchor="middle" dominant-baseline="central">Mongoose ODM · User · GameRoom</text>
+
+  <text class="ts" x="340" y="472" text-anchor="middle">Socket events: join_room · submit_answer · user_entering_lobby · send_duel_request · submit_live_progress</text>
+
+  <!-- ARROWS SERVER → SERVICES -->
+  <line x1="200" y1="508" x2="200" y2="568" class="arr" stroke="#3B8BD4" marker-end="url(#arrow)"/>
+  <text class="ts" x="208" y="542" style="fill:#185FA5">Mongoose</text>
+  <line x1="478" y1="508" x2="478" y2="568" class="arr" stroke="#BA7517" marker-end="url(#arrow)"/>
+  <text class="ts" x="486" y="542" style="fill:#854F0B">HTTPS</text>
+
+  <!-- SERVICES LAYER -->
+  <g class="c-blue">
+    <rect x="44" y="568" width="276" height="150" rx="14" stroke-width="0.5"/>
+    <text class="th" x="182" y="594" text-anchor="middle">MongoDB Atlas</text>
+  </g>
+  <g class="c-blue"><rect x="64" y="610" width="112" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="120" y="632" text-anchor="middle" dominant-baseline="central">User</text>
+    <text class="ts" x="120" y="650" text-anchor="middle" dominant-baseline="central">name · XP · socket</text></g>
+  <g class="c-blue"><rect x="188" y="610" width="122" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="249" y="632" text-anchor="middle" dominant-baseline="central">GameRoom</text>
+    <text class="ts" x="249" y="650" text-anchor="middle" dominant-baseline="central">roomId · players · seq</text></g>
+  <text class="ts" x="182" y="700" text-anchor="middle">Cloud-hosted · free M0 tier</text>
+
+  <g class="c-amber">
+    <rect x="340" y="568" width="296" height="150" rx="14" stroke-width="0.5"/>
+    <text class="th" x="488" y="594" text-anchor="middle">Google Gemini AI</text>
+  </g>
+  <g class="c-amber"><rect x="360" y="610" width="116" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="418" y="632" text-anchor="middle" dominant-baseline="central">ARIA Hints</text>
+    <text class="ts" x="418" y="650" text-anchor="middle" dominant-baseline="central">Hectoc step guide</text></g>
+  <g class="c-amber"><rect x="488" y="610" width="138" height="52" rx="8" stroke-width="0.5"/>
+    <text class="th" x="557" y="632" text-anchor="middle" dominant-baseline="central">Commentary</text>
+    <text class="ts" x="557" y="650" text-anchor="middle" dominant-baseline="central">difficulty · explain</text></g>
+  <text class="ts" x="488" y="700" text-anchor="middle">gemini-2.5-flash · free tier</text>
+
+  <!-- Legend -->
+  <rect x="44" y="738" width="12" height="12" rx="2" fill="#7F77DD"/>
+  <text class="ts" x="62" y="749">HTTP / REST</text>
+  <rect x="164" y="738" width="12" height="12" rx="2" fill="#1D9E75"/>
+  <text class="ts" x="182" y="749">WebSocket</text>
+  <rect x="284" y="738" width="12" height="12" rx="2" fill="#3B8BD4"/>
+  <text class="ts" x="302" y="749">MongoDB</text>
+  <rect x="404" y="738" width="12" height="12" rx="2" fill="#BA7517"/>
+  <text class="ts" x="422" y="749">Gemini AI</text>
+</svg>
