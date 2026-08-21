@@ -14,14 +14,18 @@ const server = http.createServer(app);
 
 // Initialize Socket.io with CORS allowances for our React Frontend
 const io = socketIo(server, {
-  cors: {
-    origin: "*", // In production, replace with your specific frontend domain
-    methods: ["GET", "POST"]
+cors: {
+origin: "https://your-frontend.vercel.app",
+methods: ["GET", "POST"],
+credentials: true
   }
 });
 
 // Middleware Configuration
-app.use(cors());
+app.use(cors({
+  origin: "https://your-frontend.vercel.app",
+  credentials: true
+}));
 app.use(express.json()); // Allows Express to read incoming JSON request bodies
 
 // Database Connection
