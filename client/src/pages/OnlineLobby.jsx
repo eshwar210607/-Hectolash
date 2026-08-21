@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
 // Initialize socket client outside render context to prevent duplicate bindings
-const socket = io('http://localhost:5000');
+const socket = io(import.meta.env.VITE_API_URL);
 
 const OnlineLobby = () => {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { checkAnswer } from '../../utils/mathEngine'; // Adjust path if needed
 
-const socket = io('http://localhost:5000');
+const socket = io(import.meta.env.VITE_API_URL);
 
 const OnlineDuel = () => {
   const { roomId } = useParams();
