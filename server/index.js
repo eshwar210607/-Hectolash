@@ -15,7 +15,7 @@ const server = http.createServer(app);
 // Initialize Socket.io with CORS allowances for our React Frontend
 const io = socketIo(server, {
 cors: {
-origin: "https://mathwizardoxen.vercel.app/",
+origin: "https://mathwizardoxen.vercel.app",
 methods: ["GET", "POST"],
 credentials: true
   }
@@ -23,7 +23,7 @@ credentials: true
 
 // Middleware Configuration
 app.use(cors({
-  origin: "https://mathwizardoxen.vercel.app/",
+  origin: "https://mathwizardoxen.vercel.app",
   credentials: true
 }));
 app.use(express.json()); // Allows Express to read incoming JSON request bodies
