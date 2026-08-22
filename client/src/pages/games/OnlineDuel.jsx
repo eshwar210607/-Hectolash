@@ -62,7 +62,7 @@ const OnlineDuel = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/game/evaluate-progress', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/game/evaluate-progress`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const OnlineDuel = () => {
 
       try {
         const token = localStorage.getItem('token');
-        await fetch('/api/game/submit-duel-result', {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/game/submit-duel-result`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

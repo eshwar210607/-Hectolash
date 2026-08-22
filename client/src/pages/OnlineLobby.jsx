@@ -17,7 +17,7 @@ const OnlineLobby = () => {
     const fetchProfileAndRegister = async () => {
       try {
         const token = localStorage.getItem('token'); // Grab your app auth token
-        const res = await fetch('/api/user/profile', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const userProfile = await res.json();
@@ -57,7 +57,7 @@ const OnlineLobby = () => {
   const fetchLobbyPlayers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/user/lobby-players', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/user/lobby-players`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
