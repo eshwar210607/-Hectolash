@@ -437,6 +437,6 @@ Admission No: 24JE0708
 
 <div align="center">
 
-*Built with ⚡ by migrating a Firebase toy project into a production MERN platform — one commit at a time.*
+*Built with ⚡ by migrating a Firebase toy project into a production MERN platform.*
 
 </div>
